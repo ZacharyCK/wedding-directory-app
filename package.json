@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ZacharyCK/wedding-directory-app/issues"
   },
-  "homepage": "https://github.com/ZacharyCK/wedding-directory-app#readme"
+  "homepage": "https://github.com/ZacharyCK/wedding-directory-app#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
