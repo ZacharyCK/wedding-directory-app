@@ -1,10 +1,9 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Guest = require("./Guests");
 
 mongoose
-  .connect(
-    "mongodb+srv://zacharyckohs:33SchnitzelWiener65@wedding-directory.b3p1p.mongodb.net/wedding-guests?retryWrites=true&w=majority&appName=wedding-directory"
-  )
+  .connect(process.env.MONGODB_URL)
   .then(() => console.log("connected to our mongodb database!"))
   .catch((err) => console.log("error connecting to our mongodb database"));
 
