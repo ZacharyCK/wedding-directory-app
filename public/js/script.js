@@ -55,23 +55,44 @@ function numberToWords(num) {
   }
 }
 
+function formatPhoneNumber(number) {
+  // Convert the number to a string in case it's provided as a different type
+  const cleaned = number.toString().replace(/\D/g, "");
+
+  // Match the first 3 digits, the next 3 digits, and the last 4 digits
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+
+  // Return null or an error message if the input is not valid
+  return null;
+}
+
 function displayGuests(guests) {
   guests.forEach((guest, index) => {
     const textNumber = numberToWords(index);
+    const guestPhone = formatPhoneNumber(guest.phone);
+    const isWeddingParty = guest.isWeddingParty === true ? "Yes" : "No";
+    const guestAllergies = guest.allergies.length ? guest.allergies : "None";
+    const guestBlockOutDates = guest.blockOutDates.length
+      ? guest.blockOutDates
+      : "None";
     document.querySelector(".accordion").insertAdjacentHTML(
       "beforeend",
       `
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button
-                    class="accordion-button collapsed"
+                    class="accordion-button collapsed bg-info-subtle"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#flush-collapse${textNumber}"
                     aria-expanded="false"
-                    aria-controls="flush-collapseOne"
+                    aria-controls="flush-collapse${textNumber}"
                 >
-                    ${guest.firstName}
+                    ${guest.firstName + " " + guest.lastName}
                 </button>
             </h2>
             <div
@@ -80,10 +101,128 @@ function displayGuests(guests) {
             data-bs-parent="#accordionFlushExample"
             >
                 <div class="accordion-body">
-                    <ul>
-                        <li>${guest.phone}</li>
-                        <li>${guest.email}</li>
-                    </ul>
+                    <div class="container">
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          Number of Guests: ${guest.numOfGuests}
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          ${guestPhone}
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-1 mb-2">
+                        <div class="col">
+                          <a href="mailto:${
+                            guest.email
+                          }" class="btn btn-link">${guest.email}</a>
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          ${guest.address}
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          Wedding Party: ${isWeddingParty}
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          Role in Wedding: ${guest.role}
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          Role Class: ${guest.roleClass}
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-1 mb-2">
+                        <div class="col">
+                          <div class="accordion accordion-flush" id="accordionPajamas">
+                            <div class="accordian-item">
+                              <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-pajamas${textNumber}" aria-expanded="false" aria-controls="flush-collapse-pajamas${textNumber}">
+                                  Pajama Sizes
+                                </button>
+                              </h2>
+                              <div id="flush-collapse-pajamas${textNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionPajamas">
+                                <div class="accordion-body">
+                                  <div class="container">
+                                    <div class="row">
+                                      <div class="col">Shirt: ${
+                                        guest.pajamaSizes.shirt
+                                      } </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col">Shorts: ${
+                                        guest.pajamaSizes.shorts
+                                      }</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-1 mb-2">
+                        <div class="col">
+                          <div class="accordion accordion-flush" id="accordionFavorites">
+                            <div class="accordian-item">
+                              <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-favorites${textNumber}" aria-expanded="false" aria-controls="flush-collapse-favorites${textNumber}">
+                                  Favorites
+                                </button>
+                              </h2>
+                              <div id="flush-collapse-favorites${textNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionFavorites">
+                                <div class="accordion-body">
+                                  <div class="container">
+                                    <div class="row">
+                                      <div class="col">Color: ${
+                                        guest.favorites.color
+                                      } </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col">Snack: ${
+                                        guest.favorites.snack
+                                      }</div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col">Candy: ${
+                                        guest.favorites.candy
+                                      }</div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col">Alcoholic Drink: ${
+                                        guest.favorites.alcohol
+                                      }</div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col">Non-Alcoholic Drink: ${
+                                        guest.favorites.nonAlcohol
+                                      }</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          Allergies: ${guestAllergies}
+                        </div>
+                      </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col">
+                          Block-Out Dates: ${guestBlockOutDates}
+                        </div>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>
