@@ -1,0 +1,24 @@
+.btn,
+button.accordian-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+.btn:focus,
+button.accordian-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.accordian-header,
+.accordian-header:focus,
+.accordian-item,
+.accordian-item:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.accordian,
+.accordian:focus {
+  outline: none;
+  box-shadow: none;
+}

@@ -1,3 +1,56 @@
+// Form range for number of guests
+const guestRangeLabelValue = document.getElementById("rangeValue");
+const guestRangeValue = document.getElementById("guestsRange");
+
+// Update the label with the current value
+guestRangeValue.addEventListener("input", function () {
+  guestRangeLabelValue.textContent = guestRangeValue.value;
+});
+
+// Checkbox logic when wedding party checkbox is checked
+const weddingPartyCheckbox = document.getElementById("weddingParty");
+const formSubmitButton = document.getElementById("submitGuest");
+
+//checkbox event listener
+weddingPartyCheckbox.addEventListener("change", function () {
+  if (weddingPartyCheckbox.checked) {
+    formSubmitButton.insertAdjacentHTML(
+      "beforebegin",
+      `
+        <div id="weddingPartyData">
+          <div class="mb-3">
+            <label for="guestRole" class="form-label"
+              >Guest Role</label>
+            <select id="guestRole" class="form-select" aria-label="Default select example">
+              <option selected>Choose Role</option>
+              <option value="best man">Best Man</option>
+              <option value="maid of honor">Maid of Honor</option>
+              <option value="groomsman">Groomsman</option>
+              <option value="bridesmaid">Bridesmaid</option>
+              <option value="usher">Usher</option>
+              <option value="mother">Mother</option>
+              <option value="father">Father</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="guestRole" class="form-label"
+              >Role Class</label>
+            <select id="guestRole" class="form-select" aria-label="Default select example">
+              <option selected>Choose Role Class</option>
+              <option value="groomsmen">Groomsmen</option>
+              <option value="bridesmaids">Bridsmaids</option>
+              <option value="parents">Parents</option>
+            </select>
+          </div>
+        </div>
+      `
+    );
+  } else {
+    console.log("They are NOT in the wedding party!");
+    document.getElementById("weddingPartyData").remove();
+  }
+});
+
 function numberToWords(num) {
   const ones = [
     "Zero",
@@ -91,6 +144,7 @@ function displayGuests(guests) {
                     data-bs-target="#flush-collapse${textNumber}"
                     aria-expanded="false"
                     aria-controls="flush-collapse${textNumber}"
+                    onclick="this.blur();"
                 >
                     ${guest.firstName + " " + guest.lastName}
                 </button>

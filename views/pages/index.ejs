@@ -15,11 +15,105 @@
       crossorigin="anonymous"
     ></script>
 
+    <link rel="stylesheet" href="/css/styles.css" />
+
     <script src="/js/script.js" defer></script>
     <title>Wedding List</title>
   </head>
   <body>
     <h1>Wedding Guests</h1>
-    <div class="accordion accordion-flush" id="accordionFlushExample"></div>
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#flush-collapseNew"
+            aria-expanded="false"
+            aria-controls="flush-collapseNew"
+            onclick="this.blur();"
+          >
+            Add New Guest 🙂
+          </button>
+        </h2>
+        <div
+          id="flush-collapseNew"
+          class="accordion-collapse collapse"
+          data-bs-parent="#accordionFlushExample"
+        >
+          <div class="accordion-body">
+            <form>
+              <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" />
+              </div>
+              <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" />
+              </div>
+              <div class="mb-3">
+                <label for="guestsRange" class="form-label"
+                  >Guests: <span id="rangeValue">0</span></label
+                >
+                <input
+                  type="range"
+                  class="form-range"
+                  min="0"
+                  max="5"
+                  step="1"
+                  value="0"
+                  id="guestsRange"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="guestEmail" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="guestEmail" />
+              </div>
+              <div class="mb-3">
+                <label for="guestPhone" class="form-label">Phone Number</label>
+                <input type="text" class="form-control" id="guestPhone" />
+              </div>
+              <div class="mb-3">
+                <label for="guestAddress" class="form-label"
+                  >Home Address</label
+                >
+                <input type="text" class="form-control" id="guestAddress" />
+              </div>
+              <div class="mb-3">
+                <label for="guestAllergies" class="form-label"
+                  >Allergies/Food Preferences</label
+                >
+                <input type="text" class="form-control" id="guestAllergies" />
+              </div>
+              <div class="mb-3">
+                <label for="guestBlockOutDates1" class="form-label"
+                  >Block-Out Date 1</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="guestBlockOutDates1"
+                />
+                <button class="btn add-date-btn">Add Date</button>
+              </div>
+              <div class="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="weddingParty"
+                />
+                <label class="form-check-label" for="weddingParty"
+                  >Wedding Party?</label
+                >
+              </div>
+              <button type="submit" class="btn btn-primary" id="submitGuest">
+                Add Guest
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
