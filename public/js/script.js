@@ -6,6 +6,18 @@ const guestPhone = document.getElementById("guest-phone");
 const guestAddress = document.getElementById("guest-address");
 const guestAllergies = document.getElementById("guest-allergies");
 const guestBlockOutDate1 = document.getElementById("guest-blockout-date1");
+const guestBlockOutDates = [];
+
+document.querySelector(".add-date-btn").addEventListener("click", (e) => {
+  e.preventDefault();
+  const newDateHTML = `
+    <label for="guest-blockout-date2" class="form-label">Block-Out Date 2</label>
+    <input type="date" class="form-control" id="guest-blockout-date2"/>
+  `;
+  document
+    .querySelector(".add-date-btn")
+    .insertAdjacentHTML("beforebegin", newDateHTML);
+});
 
 // creating variable for guests displayed in UI
 const displayedGuests = [];
@@ -276,6 +288,26 @@ function formatPhoneNumber(number) {
   return null;
 }
 
+function formatDate(dateInput) {
+  const date = new Date(dateInput);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  const formattedDate = `${month}/${day}/${year}`;
+
+  return formattedDate;
+}
+
+function loopDates(dates) {
+  const dateString = dates.reduce(function (accumString, date) {
+    return String(formatDate(date)) + " " + accumString;
+  }, "");
+
+  return dateString;
+}
+
 function displayGuestsInUI() {
   const guestElements = document.querySelectorAll(".guest-item");
   guestElements.forEach((guest) => guest.remove());
@@ -286,7 +318,7 @@ function displayGuestsInUI() {
     const isWeddingParty = guest.isWeddingParty === true ? "Yes" : "No";
     const guestAllergies = guest.allergies.length ? guest.allergies : "None";
     const guestBlockOutDates = guest.blockOutDates.length
-      ? guest.blockOutDates
+      ? loopDates(guest.blockOutDates)
       : "None";
     document.querySelector(".accordion").insertAdjacentHTML(
       "beforeend",
@@ -294,7 +326,7 @@ function displayGuestsInUI() {
         <div class="accordion-item guest-item">
             <h2 class="accordion-header">
                 <button
-                    class="accordion-button collapsed bg-info-subtle"
+                    class="accordion-button collapsed text-bg-primary"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#flush-collapse${listNumber}"
