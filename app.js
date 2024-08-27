@@ -11,6 +11,9 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+
 // Serve static files from the 'public' directory
 app.use(express.static("public"));
 
@@ -35,6 +38,17 @@ app.get("/", (req, res) => {
 // POST request for root
 app.post("/", (req, res) => {
   res.send("You can post to this endpoint!");
+});
+
+// POST data for new guest
+app.post("/newguest", async (req, res) => {
+  try {
+    const newGuest = new Guest(req.body);
+    const savedGuest = await newGuest.save();
+    res.status(201).json(savedGuest);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
 app.listen(port, () => {

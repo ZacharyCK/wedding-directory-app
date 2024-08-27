@@ -1,17 +1,48 @@
+const firstName = document.getElementById("first-name");
+const lastName = document.getElementById("last-name");
+const numberOfGuests = document.getElementById("guest-range");
+const guestEmail = document.getElementById("guest-email");
+const guestPhone = document.getElementById("guest-phone");
+const guestAddress = document.getElementById("guest-address");
+const guestAllergies = document.getElementById("guest-allergies");
+const guestBlockOutDate1 = document.getElementById("guest-blockout-date1");
+
+// creating variable for guests displayed in UI
+const displayedGuests = [];
+
+function sendGuestToDB(newGuest) {
+  fetch("http://localhost:3000/newguest", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newGuest),
+  })
+    .then((response) => response.json())
+    .then((result) => console.log(result));
+}
+
+function resetForm() {
+  firstName.value = "";
+  lastName.value = "";
+  numberOfGuests.value = 0;
+  guestEmail.value = "";
+  guestPhone.value = "";
+  guestAddress.value = "";
+  guestAllergies.value = "";
+  guestBlockOutDate1.value = "";
+  if (document.getElementById("weddingPartyData")) {
+    document.getElementById("weddingPartyData").remove();
+  }
+  document.getElementById("new-guest-btn").click();
+}
+
 // submiting the form to add a new guest
 const newGuestForm = document.getElementById("new-guest");
+
 newGuestForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  const firstName = document.getElementById("first-name").value;
-  const lastName = document.getElementById("last-name").value;
-  const numberOfGuests = document.getElementById("guest-range").value;
-  const guestEmail = document.getElementById("guest-email").value;
-  const guestPhone = document.getElementById("guest-phone").value;
-  const guestAddress = document.getElementById("guest-address").value;
-  const guestAllergies = document.getElementById("guest-allergies").value;
-  const guestBlockOutDate1 = document.getElementById(
-    "guest-blockout-date1"
-  ).value;
+
   const weddingPartyGuest = weddingPartyCheckbox.checked ? true : false;
   let guestRole;
   let roleClass;
@@ -23,25 +54,25 @@ newGuestForm.addEventListener("submit", function (e) {
   let favoriteAlcohol;
   let favoriteNonAlcohol;
   if (document.getElementById("weddingPartyData")) {
-    guestRole = document.getElementById("guest-role");
-    roleClass = document.getElementById("role-class");
-    pjShirtSize = document.getElementById("pj-shirt-size");
-    pjShortSize = document.getElementById("pj-short-size");
-    favoriteColor = document.getElementById("fav-color");
-    favoriteSnack = document.getElementById("fav-snack");
-    favoriteCandy = document.getElementById("fav-candy");
-    favoriteAlcohol = document.getElementById("fav-alc");
-    favoriteNonAlcohol = document.getElementById("fav-non-alc");
+    guestRole = document.getElementById("guest-role").value;
+    roleClass = document.getElementById("role-class").value;
+    pjShirtSize = document.getElementById("pj-shirt-size").value;
+    pjShortSize = document.getElementById("pj-short-size").value;
+    favoriteColor = document.getElementById("fav-color").value;
+    favoriteSnack = document.getElementById("fav-snack").value;
+    favoriteCandy = document.getElementById("fav-candy").value;
+    favoriteAlcohol = document.getElementById("fav-alc").value;
+    favoriteNonAlcohol = document.getElementById("fav-non-alc").value;
   }
   const newGuest = {
-    firstName: firstName,
-    lastName: lastName,
-    email: guestEmail,
-    phone: guestPhone,
-    address: guestAddress,
-    numOfGuests: numberOfGuests,
-    allergies: [guestAllergies],
-    blockOutDates: [guestBlockOutDate1],
+    firstName: firstName.value,
+    lastName: lastName.value,
+    email: guestEmail.value,
+    phone: guestPhone.value,
+    address: guestAddress.value,
+    numOfGuests: numberOfGuests.value,
+    allergies: [guestAllergies.value],
+    blockOutDates: [guestBlockOutDate1.value],
     isWeddingParty: weddingPartyGuest,
     role: guestRole ? guestRole : "N/A",
     roleClass: roleClass ? roleClass : "N/A",
@@ -58,6 +89,10 @@ newGuestForm.addEventListener("submit", function (e) {
     },
   };
   console.log(newGuest);
+  displayedGuests.unshift(newGuest);
+  displayGuestsInUI();
+  sendGuestToDB(newGuest);
+  resetForm();
 });
 
 // Form range for number of guests
@@ -241,9 +276,12 @@ function formatPhoneNumber(number) {
   return null;
 }
 
-function displayGuests(guests) {
-  guests.forEach((guest, index) => {
-    const textNumber = numberToWords(index);
+function displayGuestsInUI() {
+  const guestElements = document.querySelectorAll(".guest-item");
+  guestElements.forEach((guest) => guest.remove());
+
+  displayedGuests.forEach((guest, index) => {
+    const listNumber = numberToWords(index);
     const guestPhone = formatPhoneNumber(guest.phone);
     const isWeddingParty = guest.isWeddingParty === true ? "Yes" : "No";
     const guestAllergies = guest.allergies.length ? guest.allergies : "None";
@@ -253,22 +291,22 @@ function displayGuests(guests) {
     document.querySelector(".accordion").insertAdjacentHTML(
       "beforeend",
       `
-        <div class="accordion-item">
+        <div class="accordion-item guest-item">
             <h2 class="accordion-header">
                 <button
                     class="accordion-button collapsed bg-info-subtle"
                     type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target="#flush-collapse${textNumber}"
+                    data-bs-target="#flush-collapse${listNumber}"
                     aria-expanded="false"
-                    aria-controls="flush-collapse${textNumber}"
+                    aria-controls="flush-collapse${listNumber}"
                     onclick="this.blur();"
                 >
                     ${guest.firstName + " " + guest.lastName}
                 </button>
             </h2>
             <div
-            id="flush-collapse${textNumber}"
+            id="flush-collapse${listNumber}"
             class="accordion-collapse collapse"
             data-bs-parent="#accordionFlushExample"
             >
@@ -316,11 +354,11 @@ function displayGuests(guests) {
                           <div class="accordion accordion-flush" id="accordionPajamas">
                             <div class="accordian-item">
                               <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-pajamas${textNumber}" aria-expanded="false" aria-controls="flush-collapse-pajamas${textNumber}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-pajamas${listNumber}" aria-expanded="false" aria-controls="flush-collapse-pajamas${listNumber}">
                                   Pajama Sizes
                                 </button>
                               </h2>
-                              <div id="flush-collapse-pajamas${textNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionPajamas">
+                              <div id="flush-collapse-pajamas${listNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionPajamas">
                                 <div class="accordion-body">
                                   <div class="container">
                                     <div class="row">
@@ -345,11 +383,11 @@ function displayGuests(guests) {
                           <div class="accordion accordion-flush" id="accordionFavorites">
                             <div class="accordian-item">
                               <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-favorites${textNumber}" aria-expanded="false" aria-controls="flush-collapse-favorites${textNumber}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-favorites${listNumber}" aria-expanded="false" aria-controls="flush-collapse-favorites${listNumber}">
                                   Favorites
                                 </button>
                               </h2>
-                              <div id="flush-collapse-favorites${textNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionFavorites">
+                              <div id="flush-collapse-favorites${listNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionFavorites">
                                 <div class="accordion-body">
                                   <div class="container">
                                     <div class="row">
@@ -403,12 +441,21 @@ function displayGuests(guests) {
   });
 }
 
+function processGuests(guests) {
+  guests.forEach((guest) => {
+    // insert each guest into the global
+    // guests array
+    displayedGuests.push(guest);
+  });
+  displayGuestsInUI();
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   fetch("/wedding-guests/data")
     .then((response) => response.json())
     .then((guests) => {
       // Use the data as needed in your JavaScript code
-      displayGuests(guests);
+      processGuests(guests);
     })
     .catch((error) => console.error("Error fetching data:", error));
 });
