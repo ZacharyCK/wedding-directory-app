@@ -26,3 +26,7 @@ button.accordian-button:focus {
 .container {
   max-width: 540px;
 }
+
+#guest-emoji {
+  font-size: 1.3rem;
+}

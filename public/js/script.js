@@ -7,17 +7,32 @@ const guestAddress = document.getElementById("guest-address");
 const guestAllergies = document.getElementById("guest-allergies");
 const guestBlockOutDate1 = document.getElementById("guest-blockout-date1");
 const guestBlockOutDates = [];
+let numberOfDates = 1;
 
 document.querySelector(".add-date-btn").addEventListener("click", (e) => {
   e.preventDefault();
+
+  numberOfDates++;
+
   const newDateHTML = `
-    <label for="guest-blockout-date2" class="form-label">Block-Out Date 2</label>
-    <input type="date" class="form-control" id="guest-blockout-date2"/>
+    <label for="guest-blockout-date${numberOfDates}" class="form-label">Block-Out Date ${numberOfDates}</label>
+    <input type="date" class="form-control date-form-input" id="guest-blockout-date${numberOfDates}"/>
   `;
   document
     .querySelector(".add-date-btn")
     .insertAdjacentHTML("beforebegin", newDateHTML);
+
+  document
+    .getElementById(`guest-blockout-date${numberOfDates - 1}`)
+    .setAttribute("required", "");
 });
+
+function processDates(dates) {
+  dates.forEach((date) => {
+    guestBlockOutDates.push(date.value);
+  });
+  // console.log(guestBlockOutDates);
+}
 
 // creating variable for guests displayed in UI
 const displayedGuests = [];
@@ -43,6 +58,23 @@ function resetForm() {
   guestAddress.value = "";
   guestAllergies.value = "";
   guestBlockOutDate1.value = "";
+  document.querySelector(".dates-block").remove();
+  document.querySelector(".allergies-block").insertAdjacentHTML(
+    "afterend",
+    `
+    <div class="mb-3 dates-block">
+      <label for="guest-blockout-date1" class="form-label">
+        Block-Out Date 1
+      </label>
+      <input
+        type="date"
+        class="form-control date-form-input"
+        id="guest-blockout-date1"
+      />
+      <button class="btn add-date-btn">Add Date</button>
+    </div>  
+  `
+  );
   if (document.getElementById("weddingPartyData")) {
     document.getElementById("weddingPartyData").remove();
   }
@@ -54,6 +86,8 @@ const newGuestForm = document.getElementById("new-guest");
 
 newGuestForm.addEventListener("submit", function (e) {
   e.preventDefault();
+
+  processDates(document.querySelectorAll(".date-form-input"));
 
   const weddingPartyGuest = weddingPartyCheckbox.checked ? true : false;
   let guestRole;
@@ -84,7 +118,8 @@ newGuestForm.addEventListener("submit", function (e) {
     address: guestAddress.value,
     numOfGuests: numberOfGuests.value,
     allergies: [guestAllergies.value],
-    blockOutDates: [guestBlockOutDate1.value],
+    blockOutDates:
+      guestBlockOutDate1.value !== "" ? [...guestBlockOutDates] : [],
     isWeddingParty: weddingPartyGuest,
     role: guestRole ? guestRole : "N/A",
     roleClass: roleClass ? roleClass : "N/A",
@@ -100,7 +135,7 @@ newGuestForm.addEventListener("submit", function (e) {
       nonAlcohol: favoriteNonAlcohol ? favoriteNonAlcohol : "N/A",
     },
   };
-  console.log(newGuest);
+  console.log(newGuest.blockOutDates);
   displayedGuests.unshift(newGuest);
   displayGuestsInUI();
   sendGuestToDB(newGuest);
@@ -313,13 +348,21 @@ function displayGuestsInUI() {
   guestElements.forEach((guest) => guest.remove());
 
   displayedGuests.forEach((guest, index) => {
+    let guestEmoji = "";
+    if (guest.roleClass === "groomsmen") {
+      guestEmoji = "🤵‍♂️";
+    } else if (guest.roleClass === "bridesmaids") {
+      guestEmoji = "👰‍♀️";
+    }
     const listNumber = numberToWords(index);
     const guestPhone = formatPhoneNumber(guest.phone);
     const isWeddingParty = guest.isWeddingParty === true ? "Yes" : "No";
     const guestAllergies = guest.allergies.length ? guest.allergies : "None";
-    const guestBlockOutDates = guest.blockOutDates.length
-      ? loopDates(guest.blockOutDates)
-      : "None";
+    // console.log(guest.blockOutDates);
+    const guestBlockOutDates =
+      guest.blockOutDates.length || guest.blockOutDates[0] == true
+        ? loopDates(guest.blockOutDates)
+        : "None";
     document.querySelector(".accordion").insertAdjacentHTML(
       "beforeend",
       `
@@ -334,7 +377,9 @@ function displayGuestsInUI() {
                     aria-controls="flush-collapse${listNumber}"
                     onclick="this.blur();"
                 >
-                    ${guest.firstName + " " + guest.lastName}
+                    ${
+                      guest.firstName + " " + guest.lastName
+                    } <span id="guest-emoji">${guestEmoji}</span>
                 </button>
             </h2>
             <div
