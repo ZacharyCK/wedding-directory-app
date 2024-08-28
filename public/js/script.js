@@ -512,7 +512,9 @@ function displayGuestsInUI() {
                       <div class="row border-top border-bottom py-3 mb-2">
                         <div class="col d-flex justify-content-evenly">
                           <a class="btn btn-info btn-info-custom px-4 py-2">Edit</a>
-                          <a class="btn btn-danger btn-danger-custom px-4 py-2">Delete</a>
+                          <a class="btn btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${
+                            guest.firstName
+                          }-${guest.lastName}">Delete</a>
                         </div>
                       </div>
                     </div>
@@ -521,6 +523,38 @@ function displayGuestsInUI() {
         </div>
         `
     );
+  });
+
+  async function deleteGuest(event) {
+    const firstName = event.target.id.split("-")[1];
+    const lastName = event.target.id.split("-")[2];
+    try {
+      const requestUrl = `/guests?firstName=${firstName}&lastName=${lastName}`;
+
+      // Make a DELETE request using fetch
+      const response = await fetch(requestUrl, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Check if the response is OK (status code 200-299)
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Guest deleted successfully:", result);
+      } else {
+        // Handle errors (e.g., guest not found, server errors)
+        const errorData = await response.json();
+        console.error("Error deleting guest:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Error making request:", error);
+    }
+  }
+
+  document.querySelectorAll(".btn-delete").forEach((delBtn) => {
+    delBtn.addEventListener("click", deleteGuest);
   });
 }
 
