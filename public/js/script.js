@@ -389,49 +389,49 @@ function displayGuestsInUI() {
             >
                 <div class="accordion-body">
                     <div class="container">
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Number of Guests: ${guest.numOfGuests}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           ${guestPhone}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-1 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
                         <div class="col">
                           <a href="mailto:${
                             guest.email
                           }" class="btn btn-link">${guest.email}</a>
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           ${guest.address}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Wedding Party: ${isWeddingParty}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Role in Wedding: ${guest.role}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Role Class: ${guest.roleClass}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-1 mb-2">
-                        <div class="col">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
+                        <div class="col w-100 p-0">
                           <div class="accordion accordion-flush" id="accordionPajamas">
                             <div class="accordian-item">
                               <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-pajamas${listNumber}" aria-expanded="false" aria-controls="flush-collapse-pajamas${listNumber}">
+                                <button class="accordion-button collapsed bg-light bg-opacity-10" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-pajamas${listNumber}" aria-expanded="false" aria-controls="flush-collapse-pajamas${listNumber}" onclick="this.blur();">
                                   Pajama Sizes
                                 </button>
                               </h2>
@@ -455,12 +455,12 @@ function displayGuestsInUI() {
                           </div>
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-1 mb-2">
-                        <div class="col">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
+                        <div class="col w-100 p-0">
                           <div class="accordion accordion-flush" id="accordionFavorites">
                             <div class="accordian-item">
                               <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-favorites${listNumber}" aria-expanded="false" aria-controls="flush-collapse-favorites${listNumber}">
+                                <button class="accordion-button collapsed bg-light bg-opacity-10" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-favorites${listNumber}" aria-expanded="false" aria-controls="flush-collapse-favorites${listNumber}" onclick="this.blur();">
                                   Favorites
                                 </button>
                               </h2>
@@ -499,17 +499,17 @@ function displayGuestsInUI() {
                           </div>
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Allergies: ${guestAllergies}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Block-Out Dates: ${guestBlockOutDates}
                         </div>
                       </div>
-                      <div class="row border-top border-bottom py-3 mb-2">
+                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col d-flex justify-content-evenly">
                           <a class="btn btn-info btn-info-custom px-4 py-2">Edit</a>
                           <a class="btn btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${

@@ -1,5 +1,6 @@
 .btn,
-button.accordian-button:focus {
+button.accordian-button:focus,
+button.accordian-button:hover {
   outline: none;
   box-shadow: none;
 }
