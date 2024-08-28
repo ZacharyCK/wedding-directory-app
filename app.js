@@ -51,6 +51,41 @@ app.post("/newguest", async (req, res) => {
   }
 });
 
+// DELETE a guest from the mongodb database
+app.delete("/guests", async (req, res) => {
+  const { firstName, lastName } = req.query; // Extract firstname and lastName from query parameters
+
+  // if firstName or lastName were NOT passed in
+  if (!firstName || !lastName) {
+    // tell client either one was not passed in
+    return res
+      .status(400)
+      .json({ message: "First name and last name are required." });
+  }
+
+  // try catch block - database issue if error was catched
+  try {
+    // delete guest using the Guest mongoose model
+    // and the findOneAndDelete method
+    const deletedGuest = await Guest.findOneAndDelete({ firstName, lastName });
+
+    // If a guest wasn't returned with the delete
+    // return a 404 status and guest not found message
+    if (!deletedGuest) {
+      return res.status(404).json({ message: "Guest not found." });
+    }
+
+    // return a success message and 200 status if a guest was deleted
+    res
+      .status(200)
+      .json({ message: "Guest deleted successfully.", deletedGuest });
+  } catch (error) {
+    // runs if there was an error with the database server connection
+    console.log(error);
+    res.status(500).json({ message: "Server error while deleting guest." });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
 });
