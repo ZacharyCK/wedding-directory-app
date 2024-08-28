@@ -525,10 +525,10 @@ function displayGuestsInUI() {
     );
   });
 
-  async function deleteGuest(event) {
-    const firstName = event.target.id.split("-")[1];
-    const lastName = event.target.id.split("-")[2];
+  // delete the guest from the mongodb database
+  async function deleteGuestFromDB(firstName, lastName) {
     try {
+      // URL to pass into the delete http request
       const requestUrl = `/guests?firstName=${firstName}&lastName=${lastName}`;
 
       // Make a DELETE request using fetch
@@ -551,6 +551,36 @@ function displayGuestsInUI() {
     } catch (error) {
       console.error("Error making request:", error);
     }
+  }
+
+  // delete the guest from the UI
+  function deleteGuestFromUI(delBtn, fName, lName) {
+    // Remove the guest item to be deleted
+    delBtn.closest(".guest-item").remove();
+
+    // get the index of the element in the
+    // displayed guest array so it can be deleted
+    // in the array
+    const indexOfDeletedGuest = displayedGuests.findIndex((guest) => {
+      return guest.firstName === fName && guest.lastName === lName;
+    });
+
+    // cut the deleted guest out of the array
+    displayedGuests.splice(indexOfDeletedGuest, 1);
+  }
+
+  function deleteGuest(event) {
+    // get the first name and last name
+    // from the id of the button we pushed
+    // so we can delete that specific guest
+    const firstName = event.target.id.split("-")[1];
+    const lastName = event.target.id.split("-")[2];
+
+    // function to delete the guest from the mongodb database
+    deleteGuestFromDB(firstName, lastName);
+
+    // function to delete the guest from the UI
+    deleteGuestFromUI(event.target, firstName, lastName);
   }
 
   document.querySelectorAll(".btn-delete").forEach((delBtn) => {
