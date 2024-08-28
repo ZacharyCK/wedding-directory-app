@@ -387,12 +387,12 @@ function displayGuestsInUI() {
             class="accordion-collapse collapse"
             data-bs-parent="#accordionFlushExample"
             >
-                <div class="accordion-body py-1">
+                <div class="accordion-body py-1 px-1">
                     <div class="container">
-                      <div class="row bg-opacity-10 py-1 mb-2">
-                        <div class="col d-flex justify-content-evenly">
-                          <a class="btn btn-info btn-info-custom px-4 py-2">Edit</a>
-                          <a class="btn btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${
+                      <div class="row bg-opacity-10 py-0 mb-2">
+                        <div class="col d-grid gap-2 px-0">
+                          <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2">Edit</a>
+                          <a class="btn btn-no-radius btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${
                             guest.firstName
                           }-${guest.lastName}">Delete</a>
                         </div>

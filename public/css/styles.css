@@ -43,3 +43,7 @@ button.accordian-button:focus {
 .btn-info-custom:focus {
   color: white !important;
 }
+
+.btn-no-radius {
+  border-radius: 0;
+}
