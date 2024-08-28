@@ -387,8 +387,16 @@ function displayGuestsInUI() {
             class="accordion-collapse collapse"
             data-bs-parent="#accordionFlushExample"
             >
-                <div class="accordion-body">
+                <div class="accordion-body py-1">
                     <div class="container">
+                      <div class="row bg-opacity-10 py-1 mb-2">
+                        <div class="col d-flex justify-content-evenly">
+                          <a class="btn btn-info btn-info-custom px-4 py-2">Edit</a>
+                          <a class="btn btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${
+                            guest.firstName
+                          }-${guest.lastName}">Delete</a>
+                        </div>
+                      </div>
                       <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Number of Guests: ${guest.numOfGuests}
@@ -507,14 +515,6 @@ function displayGuestsInUI() {
                       <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
                           Block-Out Dates: ${guestBlockOutDates}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col d-flex justify-content-evenly">
-                          <a class="btn btn-info btn-info-custom px-4 py-2">Edit</a>
-                          <a class="btn btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${
-                            guest.firstName
-                          }-${guest.lastName}">Delete</a>
                         </div>
                       </div>
                     </div>
