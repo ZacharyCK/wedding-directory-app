@@ -404,11 +404,12 @@ function displayGuestsInUI() {
                       </div>
                       <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
-                          ${guestPhone}
+                          Phone #: ${guestPhone}
                         </div>
                       </div>
                       <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
                         <div class="col">
+                          Email: 
                           <a href="mailto:${
                             guest.email
                           }" class="btn btn-link">${guest.email}</a>
@@ -416,7 +417,7 @@ function displayGuestsInUI() {
                       </div>
                       <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
                         <div class="col">
-                          ${guest.address}
+                          Address: ${guest.address}
                         </div>
                       </div>
                       <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
