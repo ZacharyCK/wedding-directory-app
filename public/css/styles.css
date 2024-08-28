@@ -30,3 +30,15 @@ button.accordian-button:focus {
 #guest-emoji {
   font-size: 1.3rem;
 }
+
+.btn-danger-custom:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-info-custom,
+.btn-info-custom:hover,
+.btn-info-custom:active,
+.btn-info-custom:focus {
+  color: white !important;
+}

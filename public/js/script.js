@@ -509,6 +509,12 @@ function displayGuestsInUI() {
                           Block-Out Dates: ${guestBlockOutDates}
                         </div>
                       </div>
+                      <div class="row border-top border-bottom py-3 mb-2">
+                        <div class="col d-flex justify-content-evenly">
+                          <a class="btn btn-info btn-info-custom px-4 py-2">Edit</a>
+                          <a class="btn btn-danger btn-danger-custom px-4 py-2">Delete</a>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>
