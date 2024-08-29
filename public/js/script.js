@@ -1,3 +1,4 @@
+// initializing the form input elements
 const firstName = document.getElementById("first-name");
 const lastName = document.getElementById("last-name");
 const numberOfGuests = document.getElementById("guest-range");
@@ -5,38 +6,102 @@ const guestEmail = document.getElementById("guest-email");
 const guestPhone = document.getElementById("guest-phone");
 const guestAddress = document.getElementById("guest-address");
 const guestAllergies = document.getElementById("guest-allergies");
-const guestBlockOutDate1 = document.getElementById("guest-blockout-date1");
-const guestBlockOutDates = [];
+
+// initializing block out date variables
+let guestBlockOutDate1 = document.getElementById("guest-blockout-date1");
+let guestBlockOutDates = [];
 let numberOfDates = 1;
-
-document.querySelector(".add-date-btn").addEventListener("click", (e) => {
-  e.preventDefault();
-
-  numberOfDates++;
-
-  const newDateHTML = `
-    <label for="guest-blockout-date${numberOfDates}" class="form-label">Block-Out Date ${numberOfDates}</label>
-    <input type="date" class="form-control date-form-input" id="guest-blockout-date${numberOfDates}"/>
-  `;
-  document
-    .querySelector(".add-date-btn")
-    .insertAdjacentHTML("beforebegin", newDateHTML);
-
-  document
-    .getElementById(`guest-blockout-date${numberOfDates - 1}`)
-    .setAttribute("required", "");
-});
-
-function processDates(dates) {
-  dates.forEach((date) => {
-    guestBlockOutDates.push(date.value);
-  });
-  // console.log(guestBlockOutDates);
-}
 
 // creating variable for guests displayed in UI
 const displayedGuests = [];
 
+// submiting the form to add a new guest
+const newGuestForm = document.getElementById("new-guest");
+
+// Form range for number of guests
+const guestRangeLabelValue = document.getElementById("rangeValue");
+const guestRangeValue = document.getElementById("guest-range");
+
+// Checkbox logic when wedding party checkbox is checked
+const weddingPartyCheckbox = document.getElementById("wedding-party");
+const formSubmitButton = document.getElementById("submitGuest");
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: makeDateButtonFunctionality
+//
+// Parameters: None
+//
+// Summary: This adds an event listener to the add-date-btn. This needs to be
+//          in a function because it needs to also be called after we submit a
+//          guest because we are removing the entire add blackout dates container
+//          which will remove the .add-date-btn element as well, so we need to
+//          re-add this event listener.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function makeDateButtonFunctionality() {
+  document.querySelector(".add-date-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // increment number of dates variable so we can use that for our
+    // attributes in the added date input element
+    numberOfDates++;
+
+    const newDateHTML = `
+      <label for="guest-blockout-date${numberOfDates}" class="form-label">Block-Out Date ${numberOfDates}</label>
+      <input type="date" class="form-control date-form-input" id="guest-blockout-date${numberOfDates}"/>
+    `;
+
+    // Inserting the new input element after the previous one
+    document
+      .querySelector(".add-date-btn")
+      .insertAdjacentHTML("beforebegin", newDateHTML);
+
+    // Setting the attribute of the previous block out date to required
+    // so user can't leave it blank and insert a date in the input element
+    // after it
+    document
+      .getElementById(`guest-blockout-date${numberOfDates - 1}`)
+      .setAttribute("required", "");
+  });
+}
+makeDateButtonFunctionality(); // Initially calling it to add event listener
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: processDates
+//
+// Parameters: dates
+//
+// Summary: Pushes dates to guestBlockOutDates array
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function processDates(dates) {
+  guestBlockOutDates = [];
+  dates.forEach((date) => {
+    console.log(date.value);
+    guestBlockOutDates.push(date.value);
+    console.log(guestBlockOutDates);
+  });
+  // console.log(guestBlockOutDates);
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: sendGuestToDB
+//
+// Parameters: newGuest
+//
+// Summary: This function sends a POST request to the server to insert
+//          a new guest into the database.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function sendGuestToDB(newGuest) {
   fetch("http://localhost:3000/newguest", {
     method: "POST",
@@ -49,6 +114,18 @@ function sendGuestToDB(newGuest) {
     .then((result) => console.log(result));
 }
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: resetForm
+//
+// Parameters: None
+//
+// Summary: This is called once a new guest is submitted to clear the input fields
+//          and close the accoridian that contains the form for inputing new guests
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function resetForm() {
   firstName.value = "";
   lastName.value = "";
@@ -58,6 +135,7 @@ function resetForm() {
   guestAddress.value = "";
   guestAllergies.value = "";
   guestBlockOutDate1.value = "";
+  numberOfDates = 1;
   document.querySelector(".dates-block").remove();
   document.querySelector(".allergies-block").insertAdjacentHTML(
     "afterend",
@@ -75,18 +153,31 @@ function resetForm() {
     </div>  
   `
   );
+  guestBlockOutDate1 = document.getElementById("guest-blockout-date1");
+  makeDateButtonFunctionality();
   if (document.getElementById("weddingPartyData")) {
     document.getElementById("weddingPartyData").remove();
   }
   document.getElementById("new-guest-btn").click();
 }
 
-// submiting the form to add a new guest
-const newGuestForm = document.getElementById("new-guest");
-
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: submit newGuestForm (Event Listener)
+//
+// Parameters: N/A
+//
+// Summary: Inserts the new user into the guests array in the application.
+//          It calls the functions to add new guests to the user interface and
+//          the database.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 newGuestForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
+  console.log(document.querySelectorAll(".date-form-input"));
   processDates(document.querySelectorAll(".date-form-input"));
 
   const weddingPartyGuest = weddingPartyCheckbox.checked ? true : false;
@@ -142,20 +233,36 @@ newGuestForm.addEventListener("submit", function (e) {
   resetForm();
 });
 
-// Form range for number of guests
-const guestRangeLabelValue = document.getElementById("rangeValue");
-const guestRangeValue = document.getElementById("guest-range");
-
-// Update the label with the current value
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: input guestRangeValue (Event Listener)
+//
+// Parameters: N/A
+//
+// Summary: This event listener changes the label to the corresponding value
+//          on the number of guests range input every time it is changed.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 guestRangeValue.addEventListener("input", function () {
   guestRangeLabelValue.textContent = guestRangeValue.value;
 });
 
-// Checkbox logic when wedding party checkbox is checked
-const weddingPartyCheckbox = document.getElementById("wedding-party");
-const formSubmitButton = document.getElementById("submitGuest");
-
-//checkbox event listener
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: change weddingPartyCheckbox (Event Listener)
+//
+// Parameters: N/A
+//
+// Summary: When a user enters in a new guest they can click the checkbox
+//          that specifies whether or not that guest is a part of the
+//          wedding party. If it is checked, this event handler adds extra
+//          fields to get data that only pertains to the wedding party.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 weddingPartyCheckbox.addEventListener("change", function () {
   if (weddingPartyCheckbox.checked) {
     formSubmitButton.insertAdjacentHTML(
@@ -251,6 +358,22 @@ weddingPartyCheckbox.addEventListener("change", function () {
   }
 });
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: numberToWords
+//
+// Parameters: num
+//
+// Summary: Takes a number value and makes the string version of that number
+//          with the number word to go with it. For example, if we pass in the
+//          number 5, the return value will be "Five". This is used to specify
+//          the id name of each accorian item that contains each guest. Each id
+//          of each guest element corresponds the number index they are in
+//          the guests array.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function numberToWords(num) {
   const ones = [
     "Zero",
@@ -308,6 +431,18 @@ function numberToWords(num) {
   }
 }
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: formatPhoneNumber
+//
+// Parameters: number
+//
+// Summary: Takes in a number for the phone number as a string and
+//          formats it like this (XXX) XXX-XXXX
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function formatPhoneNumber(number) {
   // Convert the number to a string in case it's provided as a different type
   const cleaned = number.toString().replace(/\D/g, "");
@@ -323,28 +458,72 @@ function formatPhoneNumber(number) {
   return null;
 }
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: formatDate
+//
+// Parameters: dateInput
+//
+// Summary: Gets a date input and formats it like MM/DD/YYYY and returns the value
+//          as a string.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function formatDate(dateInput) {
   const date = new Date(dateInput);
+  // console.log("This is the date coming in " + dateInput);
+  // console.log("This is the date to be formated " + date);
 
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  // Extract the UTC month, day, and year
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const year = date.getUTCFullYear();
 
+  // Format the date as MM/DD/YYYY
   const formattedDate = `${month}/${day}/${year}`;
 
   return formattedDate;
 }
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: loopDates
+//
+// Parameters: dates
+//
+// Summary: Gets an array of dates and formats them and creates one string to
+//          return with all the dates separated by a comma.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function loopDates(dates) {
-  const dateString = dates.reduce(function (accumString, date) {
-    return String(formatDate(date)) + " " + accumString;
-  }, "");
+  const dateString = dates
+    .map(function (date) {
+      return formatDate(date);
+    })
+    .join(", ");
 
   return dateString;
 }
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: displayGuestsInUI
+//
+// Parameters: None
+//
+// Summary: Remove all of the guests in the UI. Loop through the guests
+//          in the guest list array, with any new guests, and display them
+//          in the UI where the guests need to be listed.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function displayGuestsInUI() {
   const guestElements = document.querySelectorAll(".guest-item");
+
   guestElements.forEach((guest) => guest.remove());
 
   displayedGuests.forEach((guest, index) => {
@@ -526,7 +705,19 @@ function displayGuestsInUI() {
     );
   });
 
-  // delete the guest from the mongodb database
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  // Function: deleteGuestFromDB
+  //
+  // Parameters: firstName, lastName
+  //
+  // Summary: Takes in firstName and lastName of guest that needs
+  //          to be deleted and sends a delete request to the server.
+  //          Console.logs the response we get from the server.
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
   async function deleteGuestFromDB(firstName, lastName) {
     try {
       // URL to pass into the delete http request
@@ -554,7 +745,20 @@ function displayGuestsInUI() {
     }
   }
 
-  // delete the guest from the UI
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  // Function: deleteGuestFromUI
+  //
+  // Parameters: delBtn, fName, lName
+  //
+  // Summary: Takes in the delete button that was pressed and removes the parent
+  //          element that contains the whole of the guest in the UI. We go in
+  //          and delete the element in the displayedGuests array using the first
+  //          name and last name to specify the index.
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
   function deleteGuestFromUI(delBtn, fName, lName) {
     // Remove the guest item to be deleted
     delBtn.closest(".guest-item").remove();
@@ -570,6 +774,21 @@ function displayGuestsInUI() {
     displayedGuests.splice(indexOfDeletedGuest, 1);
   }
 
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  // Function: deleteGuest
+  //
+  // Parameters: event
+  //
+  // Summary: Gets the first name and last name from the delete buttons id
+  //          and stores it in two variables to be able to pass into the
+  //          deleteGuestFromDB and deleteGuestFromUI functions. Call the
+  //          functions to delete the guest from the database and the
+  //          user interface respectively.
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
   function deleteGuest(event) {
     // get the first name and last name
     // from the id of the button we pushed
@@ -589,6 +808,20 @@ function displayGuestsInUI() {
   });
 }
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: processGuests
+//
+// Parameters: guests
+//
+// Summary: Takes an array for guests acquired when the database was queried
+//          and pushes each element into the displayedGuests array. We then
+//          call the displayGuestsInUI function to display all the guests
+//          in the user interface.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 function processGuests(guests) {
   guests.forEach((guest) => {
     // insert each guest into the global
@@ -598,6 +831,20 @@ function processGuests(guests) {
   displayGuestsInUI();
 }
 
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: DOMContentLoaded (Event Listener)
+//
+// Parameters: N/A
+//
+// Summary: Runs a function when the page is loaded with the DOM content.
+//          The function sends a request to the server that returns the guests
+//          from the database and passes it into the processGuests function
+//          so the data can be processed on the client side.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
   fetch("/wedding-guests/data")
     .then((response) => response.json())
