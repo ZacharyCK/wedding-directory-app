@@ -47,3 +47,7 @@ button.accordian-button:focus {
 .btn-no-radius {
   border-radius: 0;
 }
+
+.hidden {
+  display: none;
+}

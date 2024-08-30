@@ -226,7 +226,6 @@ newGuestForm.addEventListener("submit", function (e) {
       nonAlcohol: favoriteNonAlcohol ? favoriteNonAlcohol : "N/A",
     },
   };
-  console.log(newGuest.blockOutDates);
   displayedGuests.unshift(newGuest);
   displayGuestsInUI();
   sendGuestToDB(newGuest);
@@ -537,7 +536,6 @@ function displayGuestsInUI() {
     const guestPhone = formatPhoneNumber(guest.phone);
     const isWeddingParty = guest.isWeddingParty === true ? "Yes" : "No";
     const guestAllergies = guest.allergies.length ? guest.allergies : "None";
-    // console.log(guest.blockOutDates);
     const guestBlockOutDates =
       guest.blockOutDates.length || guest.blockOutDates[0] == true
         ? loopDates(guest.blockOutDates)
@@ -570,7 +568,9 @@ function displayGuestsInUI() {
                     <div class="container">
                       <div class="row bg-opacity-10 py-0 mb-2">
                         <div class="col d-grid gap-2 px-0">
-                          <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2">Edit</a>
+                          <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2" id="edit-${
+                            guest.firstName
+                          }-${guest.lastName}">Edit</a>
                           <a class="btn btn-no-radius btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${
                             guest.firstName
                           }-${guest.lastName}">Delete</a>
@@ -703,109 +703,291 @@ function displayGuestsInUI() {
         </div>
         `
     );
+
+    // Add event listeners for delete and edit buttons
+    document
+      .getElementById(`delete-${guest.firstName}-${guest.lastName}`)
+      .addEventListener("click", deleteGuest);
+
+    document
+      .getElementById(`edit-${guest.firstName}-${guest.lastName}`)
+      .addEventListener("click", editGuestForm);
   });
+}
 
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  // Function: deleteGuestFromDB
-  //
-  // Parameters: firstName, lastName
-  //
-  // Summary: Takes in firstName and lastName of guest that needs
-  //          to be deleted and sends a delete request to the server.
-  //          Console.logs the response we get from the server.
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  async function deleteGuestFromDB(firstName, lastName) {
-    try {
-      // URL to pass into the delete http request
-      const requestUrl = `/guests?firstName=${firstName}&lastName=${lastName}`;
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: deleteGuestFromDB
+//
+// Parameters: firstName, lastName
+//
+// Summary: Takes in firstName and lastName of guest that needs
+//          to be deleted and sends a delete request to the server.
+//          Console.logs the response we get from the server.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+async function deleteGuestFromDB(firstName, lastName) {
+  try {
+    // URL to pass into the delete http request
+    const requestUrl = `/guests?firstName=${firstName}&lastName=${lastName}`;
 
-      // Make a DELETE request using fetch
-      const response = await fetch(requestUrl, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      // Check if the response is OK (status code 200-299)
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Guest deleted successfully:", result);
-      } else {
-        // Handle errors (e.g., guest not found, server errors)
-        const errorData = await response.json();
-        console.error("Error deleting guest:", errorData.message);
-      }
-    } catch (error) {
-      console.error("Error making request:", error);
-    }
-  }
-
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  // Function: deleteGuestFromUI
-  //
-  // Parameters: delBtn, fName, lName
-  //
-  // Summary: Takes in the delete button that was pressed and removes the parent
-  //          element that contains the whole of the guest in the UI. We go in
-  //          and delete the element in the displayedGuests array using the first
-  //          name and last name to specify the index.
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  function deleteGuestFromUI(delBtn, fName, lName) {
-    // Remove the guest item to be deleted
-    delBtn.closest(".guest-item").remove();
-
-    // get the index of the element in the
-    // displayed guest array so it can be deleted
-    // in the array
-    const indexOfDeletedGuest = displayedGuests.findIndex((guest) => {
-      return guest.firstName === fName && guest.lastName === lName;
+    // Make a DELETE request using fetch
+    const response = await fetch(requestUrl, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
-    // cut the deleted guest out of the array
-    displayedGuests.splice(indexOfDeletedGuest, 1);
+    // Check if the response is OK (status code 200-299)
+    if (response.ok) {
+      const result = await response.json();
+      console.log("Guest deleted successfully:", result);
+    } else {
+      // Handle errors (e.g., guest not found, server errors)
+      const errorData = await response.json();
+      console.error("Error deleting guest:", errorData.message);
+    }
+  } catch (error) {
+    console.error("Error making request:", error);
   }
+}
 
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  // Function: deleteGuest
-  //
-  // Parameters: event
-  //
-  // Summary: Gets the first name and last name from the delete buttons id
-  //          and stores it in two variables to be able to pass into the
-  //          deleteGuestFromDB and deleteGuestFromUI functions. Call the
-  //          functions to delete the guest from the database and the
-  //          user interface respectively.
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  //---------------------------------------------------------------------------------------
-  function deleteGuest(event) {
-    // get the first name and last name
-    // from the id of the button we pushed
-    // so we can delete that specific guest
-    const firstName = event.target.id.split("-")[1];
-    const lastName = event.target.id.split("-")[2];
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: deleteGuestFromUI
+//
+// Parameters: delBtn, fName, lName
+//
+// Summary: Takes in the delete button that was pressed and removes the parent
+//          element that contains the whole of the guest in the UI. We go in
+//          and delete the element in the displayedGuests array using the first
+//          name and last name to specify the index.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function deleteGuestFromUI(delBtn, fName, lName) {
+  // Remove the guest item to be deleted
+  delBtn.closest(".guest-item").remove();
 
-    // function to delete the guest from the mongodb database
-    deleteGuestFromDB(firstName, lastName);
-
-    // function to delete the guest from the UI
-    deleteGuestFromUI(event.target, firstName, lastName);
-  }
-
-  document.querySelectorAll(".btn-delete").forEach((delBtn) => {
-    delBtn.addEventListener("click", deleteGuest);
+  // get the index of the element in the
+  // displayed guest array so it can be deleted
+  // in the array
+  const indexOfDeletedGuest = displayedGuests.findIndex((guest) => {
+    return guest.firstName === fName && guest.lastName === lName;
   });
+
+  // cut the deleted guest out of the array
+  displayedGuests.splice(indexOfDeletedGuest, 1);
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: deleteGuest
+//
+// Parameters: event
+//
+// Summary: Gets the first name and last name from the delete buttons id
+//          and stores it in two variables to be able to pass into the
+//          deleteGuestFromDB and deleteGuestFromUI functions. Call the
+//          functions to delete the guest from the database and the
+//          user interface respectively.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function deleteGuest(event) {
+  // get the first name and last name
+  // from the id of the button we pushed
+  // so we can delete that specific guest
+  const firstName = event.target.id.split("-")[1];
+  const lastName = event.target.id.split("-")[2];
+
+  // function to delete the guest from the mongodb database
+  deleteGuestFromDB(firstName, lastName);
+
+  // function to delete the guest from the UI
+  deleteGuestFromUI(event.target, firstName, lastName);
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: editGuestForm
+//
+// Parameters: event
+//
+// Summary: shows form to edit the guest
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function editGuestForm(event) {
+  // Get the element we will be inserting the form into
+  const accordionBody = event.target.closest(".accordion-body");
+
+  // Import the guest data from the displayedGuests array
+  // get the first and last name of the guest to query the array
+  const firstName = event.target.id.split("-")[1];
+  const lastName = event.target.id.split("-")[2];
+  // Use the find array method to get the guest object based on firstName and lastName
+  const editGuest = displayedGuests.find(
+    (guest) => guest.firstName === firstName && guest.lastName === lastName
+  );
+
+  console.log(editGuest.blockOutDates);
+  const formattedDates = editGuest.blockOutDates.map((date) => {
+    const newDate = new Date(date);
+    return newDate.toISOString().slice(0, 10);
+  });
+
+  // Dynamically create our form inputs for dates
+  // since the number of black out dates varry per guest
+  const boDateHTMLElements = formattedDates.reduce(
+    (htmlStrAcc, currDate, index, arr) => {
+      const isLast = index === arr.length - 1;
+      console.log(isLast);
+      const htmlStr = `
+      <div class="mb-3 dates-block">
+          <label for="guest-blockout-date${index + 1}" class="form-label"
+            >Block-Out Date ${index + 1}</label
+          >
+          <input
+            type="date"
+            class="form-control date-form-input"
+            id="guest-blockout-date1"
+            value="${currDate}"
+          />
+          ${isLast ? '<button class="btn add-date-btn">Add Date</button>' : ""}
+      </div>
+    `;
+      return htmlStrAcc + htmlStr;
+    },
+    ``
+  );
+
+  // set a generic form input element for black out dates
+  const htmlGenBODates = `
+    <div class="mb-3 dates-block">
+          <label for="guest-blockout-date1" class="form-label"
+            >Block-Out Date 1</label
+          >
+          <input
+            type="date"
+            class="form-control date-form-input"
+            id="guest-blockout-date1"
+          />
+          <button class="btn add-date-btn">Add Date</button>
+      </div>
+  `;
+
+  console.log(boDateHTMLElements);
+
+  const guestAllergies = editGuest.allergies.join(", ");
+
+  // Hide the data for the guest
+  event.target.closest(".container").classList.add("hidden");
+  // insert the form to edit the guest
+  const htmlForm = `
+            <form id="new-guest">
+              <div class="mb-3">
+                <label for="first-name" class="form-label">First Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="first-name"
+                  value="${editGuest.firstName}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="last-name" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="last-name"
+                  value="${editGuest.lastName}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="guest-range" class="form-label"
+                  >Guests: <span id="rangeValue">${
+                    editGuest.numOfGuests
+                  }</span></label
+                >
+                <input
+                  type="range"
+                  class="form-range"
+                  min="0"
+                  max="5"
+                  step="1"
+                  value="${editGuest.numOfGuests}"
+                  id="guest-range"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="guest-email" class="form-label"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="guest-email"
+                  value="${editGuest.email}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="guest-phone" class="form-label">Phone Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="guest-phone"
+                  value="${editGuest.phone}"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="guest-address" class="form-label"
+                  >Home Address</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="guest-address"
+                  value="${editGuest.address}"
+                  required
+                />
+              </div>
+              <div class="mb-3 allergies-block">
+                <label for="guest-allergies" class="form-label"
+                  >Allergies/Food Preferences</label
+                >
+                <input type="text" class="form-control" id="guest-allergies" value="${guestAllergies}" />
+              </div>
+              ${boDateHTMLElements === "" ? htmlGenBODates : boDateHTMLElements}
+              <div class="mb-3 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="wedding-party"
+                />
+                <label class="form-check-label" for="wedding-party"
+                  >Wedding Party?</label
+                >
+              </div>
+              <button type="submit" class="btn btn-primary" id="submitGuest">
+                Add Guest
+              </button>
+            </form>
+  `;
+  accordionBody.insertAdjacentHTML("afterbegin", htmlForm);
+  // populate form fields with current guest data
+  // have a button to save data and update
+  // have a button to cancel editing
 }
 
 //---------------------------------------------------------------------------------------
