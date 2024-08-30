@@ -251,21 +251,20 @@ guestRangeValue.addEventListener("input", function () {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
-// Function: change weddingPartyCheckbox (Event Listener)
+// Function: checkBoxFunctionality
 //
-// Parameters: N/A
+// Parameters: event
 //
-// Summary: When a user enters in a new guest they can click the checkbox
-//          that specifies whether or not that guest is a part of the
-//          wedding party. If it is checked, this event handler adds extra
-//          fields to get data that only pertains to the wedding party.
+// Summary: This function will be called in event handlers to enable the
+//          wedding party form inputs to appear when the wedding party
+//          checkbox is clicked.
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
-weddingPartyCheckbox.addEventListener("change", function () {
-  if (weddingPartyCheckbox.checked) {
-    formSubmitButton.insertAdjacentHTML(
-      "beforebegin",
+function checkBoxFunctionality(event) {
+  if (event.target.checked) {
+    event.target.nextElementSibling.insertAdjacentHTML(
+      "afterend",
       `
         <div id="weddingPartyData">
           <div class="mb-3">
@@ -355,7 +354,23 @@ weddingPartyCheckbox.addEventListener("change", function () {
     console.log("They are NOT in the wedding party!");
     document.getElementById("weddingPartyData").remove();
   }
-});
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: change weddingPartyCheckbox (Event Listener)
+//
+// Parameters: N/A
+//
+// Summary: When a user enters in a new guest they can click the checkbox
+//          that specifies whether or not that guest is a part of the
+//          wedding party. If it is checked, this event handler adds extra
+//          fields to get data that only pertains to the wedding party.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+weddingPartyCheckbox.addEventListener("change", checkBoxFunctionality);
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -837,7 +852,6 @@ function editGuestForm(event) {
     (guest) => guest.firstName === firstName && guest.lastName === lastName
   );
 
-  console.log(editGuest.blockOutDates);
   const formattedDates = editGuest.blockOutDates.map((date) => {
     const newDate = new Date(date);
     return newDate.toISOString().slice(0, 10);
@@ -847,8 +861,8 @@ function editGuestForm(event) {
   // since the number of black out dates varry per guest
   const boDateHTMLElements = formattedDates.reduce(
     (htmlStrAcc, currDate, index, arr) => {
+      // returns true if last element
       const isLast = index === arr.length - 1;
-      console.log(isLast);
       const htmlStr = `
       <div class="mb-3 dates-block">
           <label for="guest-blockout-date${index + 1}" class="form-label"
@@ -883,15 +897,14 @@ function editGuestForm(event) {
       </div>
   `;
 
-  console.log(boDateHTMLElements);
-
+  // Making the string for allergies for the guest
   const guestAllergies = editGuest.allergies.join(", ");
 
   // Hide the data for the guest
   event.target.closest(".container").classList.add("hidden");
   // insert the form to edit the guest
   const htmlForm = `
-            <form id="new-guest">
+            <form id="edit-guest-${editGuest.firstName}-${editGuest.lastName}">
               <div class="mb-3">
                 <label for="first-name" class="form-label">First Name</label>
                 <input
@@ -974,6 +987,7 @@ function editGuestForm(event) {
                   type="checkbox"
                   class="form-check-input"
                   id="wedding-party"
+                  ${editGuest.isWeddingParty ? "checked" : ""}
                 />
                 <label class="form-check-label" for="wedding-party"
                   >Wedding Party?</label
@@ -985,6 +999,13 @@ function editGuestForm(event) {
             </form>
   `;
   accordionBody.insertAdjacentHTML("afterbegin", htmlForm);
+
+  const guestFormElement = document.getElementById(
+    `edit-guest-${editGuest.firstName}-${editGuest.lastName}`
+  );
+  const guestWeddingPartyCheckBox =
+    guestFormElement.querySelector(".form-check-input");
+  guestWeddingPartyCheckBox.addEventListener("change", checkBoxFunctionality);
   // populate form fields with current guest data
   // have a button to save data and update
   // have a button to cancel editing
