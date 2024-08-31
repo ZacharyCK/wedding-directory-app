@@ -831,6 +831,108 @@ function deleteGuest(event) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
+// Function: getWeddingPartySection
+//
+// Parameters: guest
+//
+// Summary: returns wedding party form inputs as a string or an empty string if
+//          guest is not a part of the wedding party
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function getWeddingPartySection(guest) {
+  const isWeddingParty = guest.isWeddingParty;
+  if (isWeddingParty) {
+    return `
+        <div id="weddingPartyData">
+          <div class="mb-3">
+            <label for="edit-guest-role-${guest.firstName}-${guest.lastName}" class="form-label"
+              >Guest Role</label>
+            <select id="edit-guest-role-${guest.firstName}-${guest.lastName}" class="form-select" aria-label="Default select example">
+              <option selected>Choose Role</option>
+              <option value="best man">Best Man</option>
+              <option value="maid of honor">Maid of Honor</option>
+              <option value="groomsman">Groomsman</option>
+              <option value="bridesmaid">Bridesmaid</option>
+              <option value="usher">Usher</option>
+              <option value="mother">Mother</option>
+              <option value="father">Father</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="edit-role-class-${guest.firstName}-${guest.lastName}" class="form-label"
+              >Role Class</label>
+            <select id="edit-role-class-${guest.firstName}-${guest.lastName}" class="form-select" aria-label="Default select example">
+              <option selected>Choose Role Class</option>
+              <option value="groomsmen">Groomsmen</option>
+              <option value="bridesmaids">Bridsmaids</option>
+              <option value="parents">Parents</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="edit-shirt-size-${guest.firstName}-${guest.lastName}" class="form-label"
+              >Pajama Shirt Size</label>
+            <select id="edit-shirt-size-${guest.firstName}-${guest.lastName}" class="form-select" aria-label="Default select example">
+              <option selected>Choose Shirt Size</option>
+              <option value="extra-small">XS</option>
+              <option value="small">S</option>
+              <option value="medium">M</option>
+              <option value="large">L</option>
+              <option value="extra-large">XL</option>
+              <option value="extra-extra-large">XXL</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="edit-short-size-${guest.firstName}-${guest.lastName}" class="form-label"
+              >Pajama Short Size</label>
+            <select id="edit-short-size-${guest.firstName}-${guest.lastName}" class="form-select" aria-label="Default select example">
+              <option selected>Choose Short Size</option>
+              <option value="extra-small">XS</option>
+              <option value="small">S</option>
+              <option value="medium">M</option>
+              <option value="large">L</option>
+              <option value="extra-large">XL</option>
+              <option value="extra-extra-large">XXL</option>
+            </select>
+          </div>
+          <div class="mb-3">
+                <label for="fav-color" class="form-label"
+                  >Favorite Color</label
+                >
+                <input type="text" class="form-control" id="fav-color" value="${guest.favoriteColor}" />
+          </div>
+          <div class="mb-3">
+                <label for="fav-snack" class="form-label"
+                  >Favorite Snack</label
+                >
+                <input type="text" class="form-control" id="fav-snack" value="${guest.favoriteSnack}" />
+          </div>
+          <div class="mb-3">
+                <label for="fav-candy" class="form-label"
+                  >Favorite Candy</label
+                >
+                <input type="text" class="form-control" id="fav-candy" value="${guest.favoriteCandy}" />
+          </div>
+          <div class="mb-3">
+                <label for="fav-alc" class="form-label"
+                  >Favorite Alcoholic Drink</label
+                >
+                <input type="text" class="form-control" id="fav-alc" value="${guest.favoriteAlcohol}" />
+          </div>
+          <div class="mb-3">
+                <label for="fav-non-alc" class="form-label"
+                  >Favorite Non-Alcoholic Drink</label
+                >
+                <input type="text" class="form-control" id="fav-non-alc" value="${guest.favoriteNonAlcohol}" />
+          </div>
+        </div>
+    `;
+  }
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // Function: editGuestForm
 //
 // Parameters: event
@@ -881,6 +983,8 @@ function editGuestForm(event) {
     },
     ``
   );
+
+  const weddingPartySection = getWeddingPartySection(editGuest);
 
   // set a generic form input element for black out dates
   const htmlGenBODates = `
