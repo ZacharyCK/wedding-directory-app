@@ -899,34 +899,36 @@ function getWeddingPartySection(guest) {
                 <label for="fav-color" class="form-label"
                   >Favorite Color</label
                 >
-                <input type="text" class="form-control" id="fav-color" value="${guest.favoriteColor}" />
+                <input type="text" class="form-control" id="fav-color" value="${guest.favorites.color}" />
           </div>
           <div class="mb-3">
                 <label for="fav-snack" class="form-label"
                   >Favorite Snack</label
                 >
-                <input type="text" class="form-control" id="fav-snack" value="${guest.favoriteSnack}" />
+                <input type="text" class="form-control" id="fav-snack" value="${guest.favorites.snack}" />
           </div>
           <div class="mb-3">
                 <label for="fav-candy" class="form-label"
                   >Favorite Candy</label
                 >
-                <input type="text" class="form-control" id="fav-candy" value="${guest.favoriteCandy}" />
+                <input type="text" class="form-control" id="fav-candy" value="${guest.favorites.candy}" />
           </div>
           <div class="mb-3">
                 <label for="fav-alc" class="form-label"
                   >Favorite Alcoholic Drink</label
                 >
-                <input type="text" class="form-control" id="fav-alc" value="${guest.favoriteAlcohol}" />
+                <input type="text" class="form-control" id="fav-alc" value="${guest.favorites.alcohol}" />
           </div>
           <div class="mb-3">
                 <label for="fav-non-alc" class="form-label"
                   >Favorite Non-Alcoholic Drink</label
                 >
-                <input type="text" class="form-control" id="fav-non-alc" value="${guest.favoriteNonAlcohol}" />
+                <input type="text" class="form-control" id="fav-non-alc" value="${guest.favorites.nonAlcohol}" />
           </div>
         </div>
     `;
+  } else {
+    return "";
   }
 }
 
@@ -1096,6 +1098,7 @@ function editGuestForm(event) {
                 <label class="form-check-label" for="wedding-party"
                   >Wedding Party?</label
                 >
+                ${weddingPartySection}
               </div>
               <button type="submit" class="btn btn-primary" id="submitGuest">
                 Add Guest
@@ -1110,6 +1113,17 @@ function editGuestForm(event) {
   const guestWeddingPartyCheckBox =
     guestFormElement.querySelector(".form-check-input");
   guestWeddingPartyCheckBox.addEventListener("change", checkBoxFunctionality);
+
+  const shortSizeSelect = document.getElementById(
+    `edit-short-size-${editGuest.firstName}-${editGuest.lastName}`
+  );
+  const shirtSizeSelect = document.getElementById(
+    `edit-shirt-size-${editGuest.firstName}-${editGuest.lastName}`
+  );
+
+  shortSizeSelect.options[1].selected = true;
+  shirtSizeSelect.options[1].selected = true;
+
   // populate form fields with current guest data
   // have a button to save data and update
   // have a button to cancel editing
