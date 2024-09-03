@@ -289,6 +289,7 @@ function checkBoxFunctionality(event) {
               <option value="groomsmen">Groomsmen</option>
               <option value="bridesmaids">Bridsmaids</option>
               <option value="parents">Parents</option>
+              <option value="ushers">Ushers</option>
             </select>
           </div>
           <div class="mb-3">
@@ -867,6 +868,7 @@ function getWeddingPartySection(guest) {
               <option value="groomsmen">Groomsmen</option>
               <option value="bridesmaids">Bridsmaids</option>
               <option value="parents">Parents</option>
+              <option value="ushers">Ushers</option>
             </select>
           </div>
           <div class="mb-3">
@@ -989,6 +991,62 @@ function autofillPJSizes(guest, shortSizeEl, shirtSizeEl) {
   // call function to autofill each clothing size
   selectSizeClothing(guestShortsSize, shortSizeEl);
   selectSizeClothing(guestShirtSize, shirtSizeEl);
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: autofillPartyRoleData
+//
+// Parameters: guest
+//
+// Summary: Autofills both the guest role select box and role class select
+//          box of the wedding party guest being edited.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function autofillPartyRoleData(guest) {
+  const guestRoleEl = document.getElementById(
+    `edit-guest-role-${guest.firstName}-${guest.lastName}`
+  );
+  const guestRoleClassEl = document.getElementById(
+    `edit-role-class-${guest.firstName}-${guest.lastName}`
+  );
+  const guestRole = guest.role;
+  switch (guestRole) {
+    case "best man":
+      guestRoleEl.options[1].selected = true;
+      guestRoleClassEl.options[1].selected = true;
+      break;
+    case "maid of honor":
+      guestRoleEl.options[2].selected = true;
+      guestRoleClassEl.options[2].selected = true;
+      break;
+    case "groomsman":
+      guestRoleEl.options[3].selected = true;
+      guestRoleClassEl.options[1].selected = true;
+      break;
+    case "bridesmaid":
+      guestRoleEl.options[4].selected = true;
+      guestRoleClassEl.options[2].selected = true;
+      break;
+    case "user":
+      guestRoleEl.options[5].selected = true;
+      guestRoleClassEl.options[4].selected = true;
+      break;
+    case "mother":
+      guestRoleEl.options[6].selected = true;
+      guestRoleClassEl.options[3].selected = true;
+      break;
+    case "father":
+      guestRoleEl.options[7].selected = true;
+      guestRoleClassEl.options[3].selected = true;
+      break;
+    default:
+      guestRoleEl.options[0].selected = true;
+      guestRoleClassEl.options[0].selected = true;
+      break;
+  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -1173,14 +1231,17 @@ function editGuestForm(event) {
     guestFormElement.querySelector(".form-check-input");
   guestWeddingPartyCheckBox.addEventListener("change", checkBoxFunctionality);
 
+  // Autofill short and shirt sizes
   const shortSizeSelect = document.getElementById(
     `edit-short-size-${editGuest.firstName}-${editGuest.lastName}`
   );
   const shirtSizeSelect = document.getElementById(
     `edit-shirt-size-${editGuest.firstName}-${editGuest.lastName}`
   );
-
   autofillPJSizes(editGuest, shortSizeSelect, shirtSizeSelect);
+
+  // Autofill guest role and role class
+  autofillPartyRoleData(editGuest);
 
   // populate form fields with current guest data
   // have a button to save data and update
