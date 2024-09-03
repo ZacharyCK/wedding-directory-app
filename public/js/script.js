@@ -935,6 +935,65 @@ function getWeddingPartySection(guest) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
+// Function: selectSizeClothing
+//
+// Parameters: clothingSize, clothingElement
+//
+// Summary: Selects and autofills a clothing size element based on the clothing size
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function selectSizeClothing(clothingSize, clothingElement) {
+  // based on guest sizes select the corresponding options in UI
+  switch (clothingSize) {
+    case "extra-small":
+      clothingElement.options[1].selected = true;
+      break;
+    case "small":
+      clothingElement.options[2].selected = true;
+      break;
+    case "medium":
+      clothingElement.options[3].selected = true;
+      break;
+    case "large":
+      clothingElement.options[4].selected = true;
+      break;
+    case "extra-large":
+      clothingElement.options[5].selected = true;
+      break;
+    case "extra-extra-large":
+      clothingElement.options[6].selected = true;
+      break;
+    default:
+      clothingElement.options[0].selected = true;
+      break;
+  }
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: autofillPJSizes
+//
+// Parameters: guest, shortSizeEl, shirtSizeEl
+//
+// Summary: Autofills the shorts and shirt size element based on the guest data
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function autofillPJSizes(guest, shortSizeEl, shirtSizeEl) {
+  // bring in the guest short and shirt sizes
+  guestShortsSize = guest.pajamaSizes.shorts;
+  guestShirtSize = guest.pajamaSizes.shirt;
+
+  // call function to autofill each clothing size
+  selectSizeClothing(guestShortsSize, shortSizeEl);
+  selectSizeClothing(guestShirtSize, shirtSizeEl);
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // Function: editGuestForm
 //
 // Parameters: event
@@ -1121,8 +1180,7 @@ function editGuestForm(event) {
     `edit-shirt-size-${editGuest.firstName}-${editGuest.lastName}`
   );
 
-  shortSizeSelect.options[1].selected = true;
-  shirtSizeSelect.options[1].selected = true;
+  autofillPJSizes(editGuest, shortSizeSelect, shirtSizeSelect);
 
   // populate form fields with current guest data
   // have a button to save data and update
