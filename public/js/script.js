@@ -526,6 +526,35 @@ function loopDates(dates) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
+// Function: processGuestBtnClick
+//
+// Parameters: event
+//
+// Summary: Process what happens to each accordian guest item once each button
+//          is clicked
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function processGuestBtnClick(event) {
+  if (
+    event.target
+      .closest(".guest-item")
+      .querySelector(".container")
+      .classList.contains("hidden")
+  ) {
+    setTimeout(() => {
+      event.target
+        .closest(".guest-item")
+        .querySelector(".container")
+        .classList.remove("hidden");
+      event.target.closest(".guest-item").querySelector("form").remove();
+    }, 300);
+  }
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // Function: displayGuestsInUI
 //
 // Parameters: None
@@ -559,7 +588,9 @@ function displayGuestsInUI() {
     document.querySelector(".accordion").insertAdjacentHTML(
       "beforeend",
       `
-        <div class="accordion-item guest-item">
+        <div class="accordion-item guest-item" id="guest-${guest.firstName}-${
+        guest.lastName
+      }">
             <h2 class="accordion-header">
                 <button
                     class="accordion-button collapsed text-bg-primary"
@@ -719,6 +750,11 @@ function displayGuestsInUI() {
         </div>
         `
     );
+
+    // Add event listener to the button of each guest
+    document.querySelectorAll(".accordion-button").forEach((guestButton) => {
+      guestButton.addEventListener("click", processGuestBtnClick);
+    });
 
     // Add event listeners for delete and edit buttons
     document
