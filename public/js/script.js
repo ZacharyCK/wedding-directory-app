@@ -539,13 +539,13 @@ function processGuestBtnClick(event) {
   if (
     event.target
       .closest(".guest-item")
-      .querySelector(".container")
+      .querySelector(".guest-data-container")
       .classList.contains("hidden")
   ) {
     setTimeout(() => {
       event.target
         .closest(".guest-item")
-        .querySelector(".container")
+        .querySelector(".guest-data-container")
         .classList.remove("hidden");
       event.target.closest(".guest-item").querySelector("form").remove();
     }, 300);
@@ -612,7 +612,7 @@ function displayGuestsInUI() {
             data-bs-parent="#accordionFlushExample"
             >
                 <div class="accordion-body py-1 px-1">
-                    <div class="container">
+                    <div class="container guest-data-container">
                       <div class="row bg-opacity-10 py-0 mb-2">
                         <div class="col d-grid gap-2 px-0">
                           <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2" id="edit-${
@@ -1020,13 +1020,15 @@ function selectSizeClothing(clothingSize, clothingElement) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 function autofillPJSizes(guest, shortSizeEl, shirtSizeEl) {
-  // bring in the guest short and shirt sizes
-  guestShortsSize = guest.pajamaSizes.shorts;
-  guestShirtSize = guest.pajamaSizes.shirt;
-
   // call function to autofill each clothing size
-  selectSizeClothing(guestShortsSize, shortSizeEl);
-  selectSizeClothing(guestShirtSize, shirtSizeEl);
+  if (shortSizeEl !== null && shirtSizeEl !== null) {
+    // bring in the guest short and shirt sizes
+    guestShortsSize = guest.pajamaSizes.shorts;
+    guestShirtSize = guest.pajamaSizes.shirt;
+
+    selectSizeClothing(guestShortsSize, shortSizeEl);
+    selectSizeClothing(guestShirtSize, shirtSizeEl);
+  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -1042,47 +1044,69 @@ function autofillPJSizes(guest, shortSizeEl, shirtSizeEl) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 function autofillPartyRoleData(guest) {
-  const guestRoleEl = document.getElementById(
-    `edit-guest-role-${guest.firstName}-${guest.lastName}`
-  );
-  const guestRoleClassEl = document.getElementById(
-    `edit-role-class-${guest.firstName}-${guest.lastName}`
-  );
-  const guestRole = guest.role;
-  switch (guestRole) {
-    case "best man":
-      guestRoleEl.options[1].selected = true;
-      guestRoleClassEl.options[1].selected = true;
-      break;
-    case "maid of honor":
-      guestRoleEl.options[2].selected = true;
-      guestRoleClassEl.options[2].selected = true;
-      break;
-    case "groomsman":
-      guestRoleEl.options[3].selected = true;
-      guestRoleClassEl.options[1].selected = true;
-      break;
-    case "bridesmaid":
-      guestRoleEl.options[4].selected = true;
-      guestRoleClassEl.options[2].selected = true;
-      break;
-    case "user":
-      guestRoleEl.options[5].selected = true;
-      guestRoleClassEl.options[4].selected = true;
-      break;
-    case "mother":
-      guestRoleEl.options[6].selected = true;
-      guestRoleClassEl.options[3].selected = true;
-      break;
-    case "father":
-      guestRoleEl.options[7].selected = true;
-      guestRoleClassEl.options[3].selected = true;
-      break;
-    default:
-      guestRoleEl.options[0].selected = true;
-      guestRoleClassEl.options[0].selected = true;
-      break;
+  if (guest.isWeddingParty) {
+    const guestRoleEl = document.getElementById(
+      `edit-guest-role-${guest.firstName}-${guest.lastName}`
+    );
+    const guestRoleClassEl = document.getElementById(
+      `edit-role-class-${guest.firstName}-${guest.lastName}`
+    );
+    const guestRole = guest.role;
+    switch (guestRole) {
+      case "best man":
+        guestRoleEl.options[1].selected = true;
+        guestRoleClassEl.options[1].selected = true;
+        break;
+      case "maid of honor":
+        guestRoleEl.options[2].selected = true;
+        guestRoleClassEl.options[2].selected = true;
+        break;
+      case "groomsman":
+        guestRoleEl.options[3].selected = true;
+        guestRoleClassEl.options[1].selected = true;
+        break;
+      case "bridesmaid":
+        guestRoleEl.options[4].selected = true;
+        guestRoleClassEl.options[2].selected = true;
+        break;
+      case "user":
+        guestRoleEl.options[5].selected = true;
+        guestRoleClassEl.options[4].selected = true;
+        break;
+      case "mother":
+        guestRoleEl.options[6].selected = true;
+        guestRoleClassEl.options[3].selected = true;
+        break;
+      case "father":
+        guestRoleEl.options[7].selected = true;
+        guestRoleClassEl.options[3].selected = true;
+        break;
+      default:
+        guestRoleEl.options[0].selected = true;
+        guestRoleClassEl.options[0].selected = true;
+        break;
+    }
   }
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: removeForm
+//
+// Parameters: event
+//
+// Summary: remove the edit form and display the data
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function removeForm(event) {
+  const editForm = event.target.closest(".edit-guest-form");
+  const guestData = event.target
+    .closest(".accordion-body")
+    .querySelector(".guest-data-container");
+  guestData.classList.remove("hidden");
+  editForm.remove();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1163,7 +1187,9 @@ function editGuestForm(event) {
   event.target.closest(".container").classList.add("hidden");
   // insert the form to edit the guest
   const htmlForm = `
-            <form id="edit-guest-${editGuest.firstName}-${editGuest.lastName}">
+            <form class="edit-guest-form" id="edit-guest-${
+              editGuest.firstName
+            }-${editGuest.lastName}">
               <div class="mb-3">
                 <label for="first-name" class="form-label">First Name</label>
                 <input
@@ -1253,9 +1279,16 @@ function editGuestForm(event) {
                 >
                 ${weddingPartySection}
               </div>
-              <button type="submit" class="btn btn-primary" id="submitGuest">
-                Add Guest
-              </button>
+              <div class="container">
+                <div class="row bg-opacity-10 py-0 mb-2">
+                  <div class="col d-grid gap-2 px-0">
+                    <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2" id="edit-confirm-${
+                      editGuest.firstName
+                    }-${editGuest.lastName}">Confirm Edit</a>
+                    <a class="btn btn-no-radius btn-danger btn-danger-custom px-4 py-2" id="edit-cancel">Cancel</a>
+                  </div>
+                </div>
+              </div>
             </form>
   `;
   accordionBody.insertAdjacentHTML("afterbegin", htmlForm);
@@ -1274,10 +1307,15 @@ function editGuestForm(event) {
   const shirtSizeSelect = document.getElementById(
     `edit-shirt-size-${editGuest.firstName}-${editGuest.lastName}`
   );
+
   autofillPJSizes(editGuest, shortSizeSelect, shirtSizeSelect);
 
   // Autofill guest role and role class
   autofillPartyRoleData(editGuest);
+
+  // Cancel edit button functionality
+  const cancelEditButton = document.getElementById("edit-cancel");
+  cancelEditButton.addEventListener("click", removeForm);
 
   // populate form fields with current guest data
   // have a button to save data and update
