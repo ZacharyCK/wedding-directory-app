@@ -555,6 +555,166 @@ function processGuestBtnClick(event) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
+// Function: getGuestContainer
+//
+// Parameters: guest, index
+//
+// Summary: return the container HTML that contains guest data
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function getGuestContainer(guest, index) {
+  const listNumber = numberToWords(index);
+  const guestPhone = formatPhoneNumber(guest.phone);
+  const isWeddingParty = guest.isWeddingParty === true ? "Yes" : "No";
+  const guestAllergies = guest.allergies.length ? guest.allergies : "None";
+  const guestBlockOutDates =
+    guest.blockOutDates.length || guest.blockOutDates[0] == true
+      ? loopDates(guest.blockOutDates)
+      : "None";
+
+  return `
+    <div class="container guest-data-container">
+      <div class="row bg-opacity-10 py-0 mb-2">
+        <div class="col d-grid gap-2 px-0">
+          <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2" id="edit-${guest.firstName}-${guest.lastName}">Edit</a>
+          <a class="btn btn-no-radius btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${guest.firstName}-${guest.lastName}">Delete</a>
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Number of Guests: ${guest.numOfGuests}
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Phone #: ${guestPhone}
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
+        <div class="col">
+          Email: 
+          <a href="mailto:${guest.email}" class="btn btn-link">${guest.email}</a>
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Address: ${guest.address}
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Wedding Party: ${isWeddingParty}
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Role in Wedding: ${guest.role}
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Role Class: ${guest.roleClass}
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
+        <div class="col w-100 p-0">
+          <div class="accordion accordion-flush" id="accordionPajamas">
+            <div class="accordian-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-light bg-opacity-10" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-pajamas${listNumber}" aria-expanded="false" aria-controls="flush-collapse-pajamas${listNumber}" onclick="this.blur();">
+                  Pajama Sizes
+                </button>
+              </h2>
+              <div id="flush-collapse-pajamas${listNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionPajamas">
+                <div class="accordion-body">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col">Shirt: ${guest.pajamaSizes.shirt} </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">Shorts: ${guest.pajamaSizes.shorts}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
+        <div class="col w-100 p-0">
+          <div class="accordion accordion-flush" id="accordionFavorites">
+            <div class="accordian-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-light bg-opacity-10" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-favorites${listNumber}" aria-expanded="false" aria-controls="flush-collapse-favorites${listNumber}" onclick="this.blur();">
+                  Favorites
+                </button>
+              </h2>
+              <div id="flush-collapse-favorites${listNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionFavorites">
+                <div class="accordion-body">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col">Color: ${guest.favorites.color} </div>
+                    </div>
+                    <div class="row">
+                      <div class="col">Snack: ${guest.favorites.snack}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col">Candy: ${guest.favorites.candy}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col">Alcoholic Drink: ${guest.favorites.alcohol}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col">Non-Alcoholic Drink: ${guest.favorites.nonAlcohol}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Allergies: ${guestAllergies}
+        </div>
+      </div>
+      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
+        <div class="col">
+          Block-Out Dates: ${guestBlockOutDates}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: addDelAndEditBtnListeners
+//
+// Parameters: guest
+//
+// Summary: Add the event listeners for the delete and edit buttons for a guest
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function addDelAndEditBtnListeners(guest) {
+  // Add event listeners for delete and edit buttons
+  document
+    .getElementById(`delete-${guest.firstName}-${guest.lastName}`)
+    .addEventListener("click", deleteGuest);
+
+  document
+    .getElementById(`edit-${guest.firstName}-${guest.lastName}`)
+    .addEventListener("click", editGuestForm);
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // Function: displayGuestsInUI
 //
 // Parameters: None
@@ -578,13 +738,7 @@ function displayGuestsInUI() {
       guestEmoji = "👰‍♀️";
     }
     const listNumber = numberToWords(index);
-    const guestPhone = formatPhoneNumber(guest.phone);
-    const isWeddingParty = guest.isWeddingParty === true ? "Yes" : "No";
-    const guestAllergies = guest.allergies.length ? guest.allergies : "None";
-    const guestBlockOutDates =
-      guest.blockOutDates.length || guest.blockOutDates[0] == true
-        ? loopDates(guest.blockOutDates)
-        : "None";
+
     document.querySelector(".accordion").insertAdjacentHTML(
       "beforeend",
       `
@@ -612,139 +766,7 @@ function displayGuestsInUI() {
             data-bs-parent="#accordionFlushExample"
             >
                 <div class="accordion-body py-1 px-1">
-                    <div class="container guest-data-container">
-                      <div class="row bg-opacity-10 py-0 mb-2">
-                        <div class="col d-grid gap-2 px-0">
-                          <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2" id="edit-${
-                            guest.firstName
-                          }-${guest.lastName}">Edit</a>
-                          <a class="btn btn-no-radius btn-danger btn-danger-custom px-4 py-2 btn-delete" id="delete-${
-                            guest.firstName
-                          }-${guest.lastName}">Delete</a>
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Number of Guests: ${guest.numOfGuests}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Phone #: ${guestPhone}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
-                        <div class="col">
-                          Email: 
-                          <a href="mailto:${
-                            guest.email
-                          }" class="btn btn-link">${guest.email}</a>
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Address: ${guest.address}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Wedding Party: ${isWeddingParty}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Role in Wedding: ${guest.role}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Role Class: ${guest.roleClass}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
-                        <div class="col w-100 p-0">
-                          <div class="accordion accordion-flush" id="accordionPajamas">
-                            <div class="accordian-item">
-                              <h2 class="accordion-header">
-                                <button class="accordion-button collapsed bg-light bg-opacity-10" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-pajamas${listNumber}" aria-expanded="false" aria-controls="flush-collapse-pajamas${listNumber}" onclick="this.blur();">
-                                  Pajama Sizes
-                                </button>
-                              </h2>
-                              <div id="flush-collapse-pajamas${listNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionPajamas">
-                                <div class="accordion-body">
-                                  <div class="container">
-                                    <div class="row">
-                                      <div class="col">Shirt: ${
-                                        guest.pajamaSizes.shirt
-                                      } </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col">Shorts: ${
-                                        guest.pajamaSizes.shorts
-                                      }</div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-1 mb-2">
-                        <div class="col w-100 p-0">
-                          <div class="accordion accordion-flush" id="accordionFavorites">
-                            <div class="accordian-item">
-                              <h2 class="accordion-header">
-                                <button class="accordion-button collapsed bg-light bg-opacity-10" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-favorites${listNumber}" aria-expanded="false" aria-controls="flush-collapse-favorites${listNumber}" onclick="this.blur();">
-                                  Favorites
-                                </button>
-                              </h2>
-                              <div id="flush-collapse-favorites${listNumber}" class="accordion-collapse collapse" data-bs-parent="#accordionFavorites">
-                                <div class="accordion-body">
-                                  <div class="container">
-                                    <div class="row">
-                                      <div class="col">Color: ${
-                                        guest.favorites.color
-                                      } </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col">Snack: ${
-                                        guest.favorites.snack
-                                      }</div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col">Candy: ${
-                                        guest.favorites.candy
-                                      }</div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col">Alcoholic Drink: ${
-                                        guest.favorites.alcohol
-                                      }</div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col">Non-Alcoholic Drink: ${
-                                        guest.favorites.nonAlcohol
-                                      }</div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Allergies: ${guestAllergies}
-                        </div>
-                      </div>
-                      <div class="row border border-info-subtle bg-info bg-opacity-10 py-3 mb-2">
-                        <div class="col">
-                          Block-Out Dates: ${guestBlockOutDates}
-                        </div>
-                      </div>
-                    </div>
+                    ${getGuestContainer(guest, index)}
                 </div>
             </div>
         </div>
@@ -756,14 +778,7 @@ function displayGuestsInUI() {
       guestButton.addEventListener("click", processGuestBtnClick);
     });
 
-    // Add event listeners for delete and edit buttons
-    document
-      .getElementById(`delete-${guest.firstName}-${guest.lastName}`)
-      .addEventListener("click", deleteGuest);
-
-    document
-      .getElementById(`edit-${guest.firstName}-${guest.lastName}`)
-      .addEventListener("click", editGuestForm);
+    addDelAndEditBtnListeners(guest);
   });
 }
 
@@ -1133,6 +1148,7 @@ function processGuestEdit(event) {
   const formAddress = editForm.querySelector("#guest-address");
   const formAllergies = editForm.querySelector("#guest-allergies");
   const formBODates = editForm.querySelectorAll(".date-form-input");
+  const boDatesArray = Array.from(formBODates).map((date) => date.value);
   const formWeddingParty = editForm.querySelector("#wedding-party");
   let formGuestRole,
     formRoleClass,
@@ -1162,23 +1178,63 @@ function processGuestEdit(event) {
     formFavAlc = editForm.querySelector(`#fav-alc`);
     formFavNonAlc = editForm.querySelector(`#fav-non-alc`);
   }
-  // console.log(
-  //   formFirstName.value,
-  //   formLastName.value,
-  //   formNumGuests.value,
-  //   formEmail.value,
-  //   formPhoneNum.value,
-  //   formAddress.value,
-  //   formAllergies.value,
-  //   formBODates,
-  //   formWeddingParty.checked
-  // );
-  const guestToEdit = displayedGuests.find((guest) => {
+
+  const updatedGuest = {
+    firstName: formFirstName.value,
+    lastName: formLastName.value,
+    email: formEmail.value,
+    phone: formPhoneNum.value,
+    address: formAddress.value,
+    numOfGuests: formNumGuests.value,
+    allergies: [formAllergies.value],
+    blockOutDates: boDatesArray[0] !== "" ? [...boDatesArray] : [],
+    isWeddingParty: formWeddingParty.checked,
+    role: formGuestRole ? formGuestRole.value : "N/A",
+    roleClass: formRoleClass ? formRoleClass.value : "N/A",
+    pajamaSizes: {
+      shirt: formShirtSize ? formShirtSize.value : "N/A",
+      shorts: formShortSize ? formShortSize.value : "N/A",
+    },
+    favorites: {
+      color: formFavColor ? formFavColor.value : "N/A",
+      snack: formFavSnack ? formFavSnack.value : "N/A",
+      candy: formFavCandy ? formFavCandy.value : "N/A",
+      alcohol: formFavAlc ? formFavAlc.value : "N/A",
+      nonAlcohol: formFavNonAlc ? formFavNonAlc.value : "N/A",
+    },
+  };
+
+  const guestIndex = displayedGuests.findIndex((guest) => {
     return guest.firstName === firstName && guest.lastName === lastName;
   });
 
-  // Update the guest object in array for which is being edited
-  // Display Guests in UI
+  displayedGuests[guestIndex] = updatedGuest;
+
+  const guestDataContainer = event.target
+    .closest(".accordion-body")
+    .querySelector(".guest-data-container");
+
+  guestDataContainer.insertAdjacentHTML(
+    "afterend",
+    getGuestContainer(updatedGuest, guestIndex)
+  );
+
+  guestDataContainer.remove();
+  editForm.remove();
+
+  const guestItemEl = document.getElementById(`guest-${firstName}-${lastName}`);
+
+  const guestItemButton = guestItemEl.querySelector(".accordion-button");
+
+  guestItemButton.textContent = `${updatedGuest.firstName} ${updatedGuest.lastName}`;
+
+  guestItemEl.id = `guest-${updatedGuest.firstName}-${updatedGuest.lastName}`;
+
+  addDelAndEditBtnListeners(updatedGuest);
+  document.querySelectorAll(".accordion-button").forEach((guestButton) => {
+    guestButton.addEventListener("click", processGuestBtnClick);
+  });
+
   // Update the guest in the database
 }
 
