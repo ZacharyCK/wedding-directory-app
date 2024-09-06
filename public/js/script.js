@@ -1112,6 +1112,79 @@ function removeForm(event) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
+// Function: processGuestEdit
+//
+// Parameters: event
+//
+// Summary: process the edit of a guest. Called when the confirm edit button
+//          is pressed
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function processGuestEdit(event) {
+  const firstName = event.target.id.split("-")[2];
+  const lastName = event.target.id.split("-")[3];
+  const editForm = document.querySelector(".edit-guest-form");
+  const formFirstName = editForm.querySelector("#first-name");
+  const formLastName = editForm.querySelector("#last-name");
+  const formNumGuests = editForm.querySelector("#guest-range");
+  const formEmail = editForm.querySelector("#guest-email");
+  const formPhoneNum = editForm.querySelector("#guest-phone");
+  const formAddress = editForm.querySelector("#guest-address");
+  const formAllergies = editForm.querySelector("#guest-allergies");
+  const formBODates = editForm.querySelectorAll(".date-form-input");
+  const formWeddingParty = editForm.querySelector("#wedding-party");
+  let formGuestRole,
+    formRoleClass,
+    formShirtSize,
+    formShortSize,
+    formFavColor,
+    formFavSnack,
+    formFavCandy,
+    formFavAlc,
+    formFavNonAlc;
+  if (formWeddingParty.checked) {
+    formGuestRole = editForm.querySelector(
+      `#edit-guest-role-${firstName}-${lastName}`
+    );
+    formRoleClass = editForm.querySelector(
+      `#edit-role-class-${firstName}-${lastName}`
+    );
+    formShirtSize = editForm.querySelector(
+      `#edit-shirt-size-${firstName}-${lastName}`
+    );
+    formShortSize = editForm.querySelector(
+      `#edit-short-size-${firstName}-${lastName}`
+    );
+    formFavColor = editForm.querySelector(`#fav-color`);
+    formFavSnack = editForm.querySelector(`#fav-snack`);
+    formFavCandy = editForm.querySelector(`#fav-candy`);
+    formFavAlc = editForm.querySelector(`#fav-alc`);
+    formFavNonAlc = editForm.querySelector(`#fav-non-alc`);
+  }
+  // console.log(
+  //   formFirstName.value,
+  //   formLastName.value,
+  //   formNumGuests.value,
+  //   formEmail.value,
+  //   formPhoneNum.value,
+  //   formAddress.value,
+  //   formAllergies.value,
+  //   formBODates,
+  //   formWeddingParty.checked
+  // );
+  const guestToEdit = displayedGuests.find((guest) => {
+    return guest.firstName === firstName && guest.lastName === lastName;
+  });
+
+  // Update the guest object in array for which is being edited
+  // Display Guests in UI
+  // Update the guest in the database
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // Function: editGuestForm
 //
 // Parameters: event
@@ -1317,9 +1390,11 @@ function editGuestForm(event) {
   const cancelEditButton = document.getElementById("edit-cancel");
   cancelEditButton.addEventListener("click", removeForm);
 
-  // populate form fields with current guest data
   // have a button to save data and update
-  // have a button to cancel editing
+  const confirmjEditButton = document.getElementById(
+    `edit-confirm-${editGuest.firstName}-${editGuest.lastName}`
+  );
+  confirmjEditButton.addEventListener("click", processGuestEdit);
 }
 
 //---------------------------------------------------------------------------------------
