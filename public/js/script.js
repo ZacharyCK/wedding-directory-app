@@ -1226,7 +1226,16 @@ function processGuestEdit(event) {
 
   const guestItemButton = guestItemEl.querySelector(".accordion-button");
 
-  guestItemButton.textContent = `${updatedGuest.firstName} ${updatedGuest.lastName}`;
+  if (updatedGuest.roleClass === "groomsmen") {
+    guestItemButton.innerHTML = `${updatedGuest.firstName} ${updatedGuest.lastName} <span id="guest-emoji">🤵‍♂️</span>`;
+  } else if (updatedGuest.roleClass === "bridesmaids") {
+    guestItemButton.innerHTML = `${updatedGuest.firstName} ${updatedGuest.lastName} <span id="guest-emoji">👰‍♀️</span>`;
+  } else if (updatedGuest.roleClass === "parents") {
+    guestItemButton.innerHTML = `${updatedGuest.firstName} ${updatedGuest.lastName} <span id="guest-emoji">🧑🏻‍🤝‍👩🏻</span>`;
+  } else {
+    guestItemButton.textContent = `${updatedGuest.firstName} ${updatedGuest.lastName}`;
+  }
+  //guestItemButton.textContent = `${updatedGuest.firstName} ${updatedGuest.lastName}`;
 
   guestItemEl.id = `guest-${updatedGuest.firstName}-${updatedGuest.lastName}`;
 
