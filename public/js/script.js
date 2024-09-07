@@ -1319,6 +1319,16 @@ function editGuestForm(event) {
             <form class="edit-guest-form" id="edit-guest-${
               editGuest.firstName
             }-${editGuest.lastName}">
+              <div class="container">
+                <div class="row bg-opacity-10 py-0 mb-2">
+                  <div class="col d-grid gap-2 px-0">
+                    <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2" id="edit-confirm-${
+                      editGuest.firstName
+                    }-${editGuest.lastName}">Confirm Edit</a>
+                    <a class="btn btn-no-radius btn-danger btn-danger-custom px-4 py-2" id="edit-cancel">Cancel</a>
+                  </div>
+                </div>
+              </div>
               <div class="mb-3">
                 <label for="first-name" class="form-label">First Name</label>
                 <input
@@ -1408,16 +1418,7 @@ function editGuestForm(event) {
                 >
                 ${weddingPartySection}
               </div>
-              <div class="container">
-                <div class="row bg-opacity-10 py-0 mb-2">
-                  <div class="col d-grid gap-2 px-0">
-                    <a class="btn btn-no-radius btn-info btn-info-custom px-4 py-2" id="edit-confirm-${
-                      editGuest.firstName
-                    }-${editGuest.lastName}">Confirm Edit</a>
-                    <a class="btn btn-no-radius btn-danger btn-danger-custom px-4 py-2" id="edit-cancel">Cancel</a>
-                  </div>
-                </div>
-              </div>
+              
             </form>
   `;
   accordionBody.insertAdjacentHTML("afterbegin", htmlForm);
