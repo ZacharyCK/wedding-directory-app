@@ -29,6 +29,44 @@ const formSubmitButton = document.getElementById("submitGuest");
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
+// Function: deleteDate
+//
+// Parameters: event
+//
+// Summary: This function deletes a date in a form that contains a delete button
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function deleteDate(event) {
+  event.preventDefault();
+
+  const previousDateInput = document.getElementById(
+    `guest-blockout-date${numberOfDates - 1}`
+  );
+
+  const previousDateLabel = document.querySelector(
+    `label[for="guest-blockout-date${numberOfDates - 1}"]`
+  );
+
+  // delete the container for that date
+  event.target.closest(".date-inputs").remove();
+  numberOfDates--;
+  previousDateInput.removeAttribute("required");
+
+  if (numberOfDates > 1) {
+    previousDateLabel.insertAdjacentHTML(
+      "beforeend",
+      '<a class="btn btn-danger mx-2 py-1 delete-date">X</a>'
+    );
+    document
+      .querySelector(".delete-date")
+      .addEventListener("click", deleteDate);
+  }
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // Function: makeDateButtonFunctionality
 //
 // Parameters: None
@@ -50,8 +88,10 @@ function makeDateButtonFunctionality() {
     numberOfDates++;
 
     const newDateHTML = `
-      <label for="guest-blockout-date${numberOfDates}" class="form-label">Block-Out Date ${numberOfDates}</label>
-      <input type="date" class="form-control date-form-input" id="guest-blockout-date${numberOfDates}"/>
+      <div class="date-inputs mt-2">
+        <label for="guest-blockout-date${numberOfDates}" class="form-label">Block-Out Date ${numberOfDates}<a class="btn btn-danger mx-2 py-1 delete-date">X</a></label>
+        <input type="date" class="form-control date-form-input" id="guest-blockout-date${numberOfDates}"/>
+      </div>
     `;
 
     // Inserting the new input element after the previous one
@@ -62,9 +102,23 @@ function makeDateButtonFunctionality() {
     // Setting the attribute of the previous block out date to required
     // so user can't leave it blank and insert a date in the input element
     // after it
+    const previousDateInput = document.getElementById(
+      `guest-blockout-date${numberOfDates - 1}`
+    );
+    previousDateInput.setAttribute("required", "");
+
+    // remove delete-date button for previous date if exists
+    const previousDateLabel = document.querySelector(
+      `label[for="guest-blockout-date${numberOfDates - 1}"]`
+    );
+    if (previousDateLabel.querySelector(".delete-date")) {
+      previousDateLabel.querySelector(".delete-date").remove();
+    }
+
+    // Set functionality for delete-date button
     document
-      .getElementById(`guest-blockout-date${numberOfDates - 1}`)
-      .setAttribute("required", "");
+      .querySelector(".delete-date")
+      .addEventListener("click", deleteDate);
   });
 }
 makeDateButtonFunctionality(); // Initially calling it to add event listener
