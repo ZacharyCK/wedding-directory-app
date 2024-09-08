@@ -19,8 +19,8 @@ const displayedGuests = [];
 const newGuestForm = document.getElementById("new-guest");
 
 // Form range for number of guests
-const guestRangeLabelValue = document.getElementById("rangeValue");
-const guestRangeValue = document.getElementById("guest-range");
+const newGuestRangeLabelValue = document.getElementById("rangeValue");
+const newGuestRangeValue = document.getElementById("new-guest-range");
 
 // Checkbox logic when wedding party checkbox is checked
 const weddingPartyCheckbox = document.getElementById("wedding-party");
@@ -244,9 +244,21 @@ newGuestForm.addEventListener("submit", function (e) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
-guestRangeValue.addEventListener("input", function () {
-  guestRangeLabelValue.textContent = guestRangeValue.value;
-});
+function updateGuestRangeText(formType) {
+  if (formType === "newGuest") {
+    newGuestRangeValue.addEventListener("input", function () {
+      newGuestRangeLabelValue.textContent = newGuestRangeValue.value;
+    });
+  }
+  if (formType === "editGuest") {
+    const editGuestRangeValue = document.getElementById("edit-guest-range");
+    const editGuestRangeLabelValue = document.getElementById("editRangeValue");
+    editGuestRangeValue.addEventListener("input", function () {
+      editGuestRangeLabelValue.textContent = editGuestRangeValue.value;
+    });
+  }
+}
+updateGuestRangeText("newGuest");
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -1142,7 +1154,7 @@ function processGuestEdit(event) {
   const editForm = document.querySelector(".edit-guest-form");
   const formFirstName = editForm.querySelector("#first-name");
   const formLastName = editForm.querySelector("#last-name");
-  const formNumGuests = editForm.querySelector("#guest-range");
+  const formNumGuests = editForm.querySelector("#edit-guest-range");
   const formEmail = editForm.querySelector("#guest-email");
   const formPhoneNum = editForm.querySelector("#guest-phone");
   const formAddress = editForm.querySelector("#guest-address");
@@ -1360,7 +1372,7 @@ function editGuestForm(event) {
               </div>
               <div class="mb-3">
                 <label for="guest-range" class="form-label"
-                  >Guests: <span id="rangeValue">${
+                  >Guests: <span id="editRangeValue">${
                     editGuest.numOfGuests
                   }</span></label
                 >
@@ -1371,7 +1383,7 @@ function editGuestForm(event) {
                   max="5"
                   step="1"
                   value="${editGuest.numOfGuests}"
-                  id="guest-range"
+                  id="edit-guest-range"
                 />
               </div>
               <div class="mb-3">
@@ -1431,6 +1443,8 @@ function editGuestForm(event) {
             </form>
   `;
   accordionBody.insertAdjacentHTML("afterbegin", htmlForm);
+
+  updateGuestRangeText("editGuest");
 
   const guestFormElement = document.getElementById(
     `edit-guest-${editGuest.firstName}-${editGuest.lastName}`
