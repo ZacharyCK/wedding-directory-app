@@ -181,7 +181,7 @@ function sendGuestToDB(newGuest) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 function editGuestToDB(editGuest) {
-  const updateUrl = `http://localhost:3000/guest?firstName=${encodeURIComponent(
+  const updateUrl = `https://wedding-directory-app.onrender.com/guest?firstName=${encodeURIComponent(
     editGuest.firstName
   )}&lastName=${encodeURIComponent(editGuest.lastName)}`;
 
@@ -902,7 +902,7 @@ function displayGuestsInUI() {
 async function deleteGuestFromDB(firstName, lastName) {
   try {
     // URL to pass into the delete http request
-    const requestUrl = `/guests?firstName=${firstName}&lastName=${lastName}`;
+    const requestUrl = `https://wedding-directory-app.onrender.com/guests?firstName=${firstName}&lastName=${lastName}`;
 
     // Make a DELETE request using fetch
     const response = await fetch(requestUrl, {
@@ -1639,7 +1639,7 @@ function processGuests(guests) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
-  fetch("/wedding-guests/data")
+  fetch("https://wedding-directory-app.onrender.com/wedding-guests/data")
     .then((response) => response.json())
     .then((guests) => {
       // Use the data as needed in your JavaScript code
