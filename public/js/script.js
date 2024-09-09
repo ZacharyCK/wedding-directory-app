@@ -157,7 +157,7 @@ function processDates(dates) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 function sendGuestToDB(newGuest) {
-  fetch("http://localhost:3000/newguest", {
+  fetch("http://localhost:3000/guest", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -166,6 +166,44 @@ function sendGuestToDB(newGuest) {
   })
     .then((response) => response.json())
     .then((result) => console.log(result));
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Function: editGuestToDB
+//
+// Parameters: editGuest
+//
+// Summary: This function sends a PUT request to the server to edit
+//          a guest in the database.
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+function editGuestToDB(editGuest) {
+  const updateUrl = `http://localhost:3000/guest?firstName=${encodeURIComponent(
+    editGuest.firstName
+  )}&lastName=${encodeURIComponent(editGuest.lastName)}`;
+
+  fetch(updateUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(editGuest),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to replace user");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("User replaced successfully:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+    });
 }
 
 //---------------------------------------------------------------------------------------
@@ -1270,13 +1308,12 @@ function processGuestEdit(event) {
     },
   };
 
-  console.log(updatedGuest.blockOutDates);
-
   const guestIndex = displayedGuests.findIndex((guest) => {
     return guest.firstName === firstName && guest.lastName === lastName;
   });
 
   displayedGuests[guestIndex] = updatedGuest;
+  editGuestToDB(updatedGuest);
 
   const guestDataContainer = event.target
     .closest(".accordion-body")
