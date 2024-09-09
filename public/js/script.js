@@ -247,6 +247,7 @@ function resetForm() {
   );
   guestBlockOutDate1 = document.getElementById("guest-blockout-date1");
   const newGuestForm = document.querySelector(".new-guest-form");
+  console.log(newGuestForm);
   makeDateButtonFunctionality(newGuestForm);
   if (document.getElementById("weddingPartyData")) {
     document.getElementById("weddingPartyData").remove();
