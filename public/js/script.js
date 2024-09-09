@@ -79,51 +79,49 @@ function deleteDate(event) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
-function makeDateButtonFunctionality(formType) {
-  if (formType === "newGuest") {
-    document.querySelector(".add-date-btn").addEventListener("click", (e) => {
-      e.preventDefault();
+function makeDateButtonFunctionality(parentEl) {
+  parentEl.querySelector(".add-date-btn").addEventListener("click", (e) => {
+    e.preventDefault();
 
-      // increment number of dates variable so we can use that for our
-      // attributes in the added date input element
-      numberOfDates++;
+    // increment number of dates variable so we can use that for our
+    // attributes in the added date input element
+    numberOfDates++;
 
-      const newDateHTML = `
+    const newDateHTML = `
         <div class="date-inputs mt-2">
           <label for="guest-blockout-date${numberOfDates}" class="form-label">Block-Out Date ${numberOfDates}<a class="btn btn-danger mx-2 py-1 delete-date">X</a></label>
           <input type="date" class="form-control date-form-input" id="guest-blockout-date${numberOfDates}"/>
         </div>
       `;
 
-      // Inserting the new input element after the previous one
-      document
-        .querySelector(".add-date-btn")
-        .insertAdjacentHTML("beforebegin", newDateHTML);
+    // Inserting the new input element after the previous one
+    parentEl
+      .querySelector(".add-date-btn")
+      .insertAdjacentHTML("beforebegin", newDateHTML);
 
-      // Setting the attribute of the previous block out date to required
-      // so user can't leave it blank and insert a date in the input element
-      // after it
-      const previousDateInput = document.getElementById(
-        `guest-blockout-date${numberOfDates - 1}`
-      );
-      previousDateInput.setAttribute("required", "");
+    // Setting the attribute of the previous block out date to required
+    // so user can't leave it blank and insert a date in the input element
+    // after it
+    const previousDateInput = parentEl.querySelector(
+      `#guest-blockout-date${numberOfDates - 1}`
+    );
+    previousDateInput.setAttribute("required", "");
 
-      // remove delete-date button for previous date if exists
-      const previousDateLabel = document.querySelector(
-        `label[for="guest-blockout-date${numberOfDates - 1}"]`
-      );
-      if (previousDateLabel.querySelector(".delete-date")) {
-        previousDateLabel.querySelector(".delete-date").remove();
-      }
+    // remove delete-date button for previous date if exists
+    const previousDateLabel = parentEl.querySelector(
+      `label[for="guest-blockout-date${numberOfDates - 1}"]`
+    );
+    if (previousDateLabel.querySelector(".delete-date")) {
+      previousDateLabel.querySelector(".delete-date").remove();
+    }
 
-      // Set functionality for delete-date button
-      document
-        .querySelector(".delete-date")
-        .addEventListener("click", deleteDate);
-    });
-  }
+    // Set functionality for delete-date button
+    parentEl
+      .querySelector(".delete-date")
+      .addEventListener("click", deleteDate);
+  });
 }
-makeDateButtonFunctionality("newGuest"); // Initially calling it to add event listener
+makeDateButtonFunctionality(newGuestForm); // Initially calling it to add event listener
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -1348,13 +1346,14 @@ function editGuestForm(event) {
 
   // Dynamically create our form inputs for dates
   // since the number of black out dates varry per guest
-  let numberOfBODates = 1;
+  numberOfDates = 1;
+
   let boDateHTMLElements = formattedDates.reduce(
     (htmlStrAcc, currDate, index, arr) => {
       // returns true if last element
       const isLast = index === arr.length - 1;
       const htmlStr = `
-        <div class="date-inputs">
+        <div class="date-inputs mt-2">
           <label for="guest-blockout-date${index + 1}" class="form-label"
             >Block-Out Date ${index + 1}</label
           >
@@ -1366,11 +1365,7 @@ function editGuestForm(event) {
             required
           />
         </div>
-          ${
-            isLast
-              ? '<button class="btn add-date-btn-edit">Add Date</button>'
-              : ""
-          }
+          ${isLast ? '<button class="btn add-date-btn">Add Date</button>' : ""}
     `;
       if (index > 0) {
         numberOfDates = arr.length;
@@ -1388,7 +1383,7 @@ function editGuestForm(event) {
   // set a generic form input element for black out dates
   const htmlGenBODates = `
     <div class="mb-3 dates-block">
-      <div class="date-inputs">
+      <div class="date-inputs mt-2">
           <label for="guest-blockout-date1" class="form-label"
             >Block-Out Date 1</label
           >
@@ -1398,7 +1393,7 @@ function editGuestForm(event) {
             id="guest-blockout-date1"
           />
       </div>
-          <button class="btn add-date-btn-edit">Add Date</button>
+          <button class="btn add-date-btn">Add Date</button>
     </div>
   `;
 
@@ -1498,7 +1493,11 @@ function editGuestForm(event) {
                 >
                 <input type="text" class="form-control" id="guest-allergies" value="${guestAllergies}" />
               </div>
-              ${boDateHTMLElements === "" ? htmlGenBODates : boDateHTMLElements}
+              ${
+                editGuest.blockOutDates.length > 0
+                  ? boDateHTMLElements
+                  : htmlGenBODates
+              }
               <div class="mb-3 form-check">
                 <input
                   type="checkbox"
@@ -1531,7 +1530,8 @@ function editGuestForm(event) {
       .addEventListener("click", deleteDate);
   }
 
-  makeDateButtonFunctionality("editGuest");
+  const formEditElement = document.querySelector(".edit-guest-form");
+  makeDateButtonFunctionality(formEditElement);
 
   const guestFormElement = document.getElementById(
     `edit-guest-${editGuest.firstName}-${editGuest.lastName}`
