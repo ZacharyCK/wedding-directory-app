@@ -641,6 +641,7 @@ function loopDates(dates) {
 //---------------------------------------------------------------------------------------
 function processGuestBtnClick(event) {
   if (
+    event.target.closest(".guest-item") &&
     event.target
       .closest(".guest-item")
       .querySelector(".guest-data-container")
