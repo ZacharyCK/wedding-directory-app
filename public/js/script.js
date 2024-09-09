@@ -157,7 +157,7 @@ function processDates(dates) {
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 function sendGuestToDB(newGuest) {
-  fetch("http://localhost:3000/guest", {
+  fetch("https://wedding-directory-app.onrender.com/guest", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
