@@ -1,7 +1,7 @@
 // initializing the form input elements
 const firstName = document.getElementById("first-name");
 const lastName = document.getElementById("last-name");
-const numberOfGuests = document.getElementById("guest-range");
+const numberOfGuests = document.getElementById("new-guest-range");
 const guestEmail = document.getElementById("guest-email");
 const guestPhone = document.getElementById("guest-phone");
 const guestAddress = document.getElementById("guest-address");
