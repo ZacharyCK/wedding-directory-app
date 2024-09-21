@@ -843,7 +843,12 @@ function displayGuestsInUI() {
       guestEmoji = "🤵‍♂️";
     } else if (guest.roleClass === "bridesmaids") {
       guestEmoji = "👰‍♀️";
+    } else if (guest.roleClass === "parents") {
+      guestEmoji = "🧑🏻‍👩🏻‍🧒🏻";
+    } else if (guest.roleClass === "ushers") {
+      guestEmoji = "🏃‍➡️";
     }
+
     const listNumber = numberToWords(index);
 
     document.querySelector(".accordion").insertAdjacentHTML(
